@@ -1,0 +1,126 @@
+﻿@using avAndon.Models;
+
+@{
+    ViewBag.Title = Resources.Language.Node;
+    ViewBag.SubTitle = Resources.Language.AutoGenerate + " " + Resources.Language.Node;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Menu {
+    @Scripts.Render("~/Scripts/Tables/Data/menu")
+    @Scripts.Render("~/Scripts/Forms/Advanced/menu")
+    @Scripts.Render("~/Scripts/Dictionary/Node-menu.js")
+}
+
+@Styles.Render("~/AdminLTE/plugins/daterangepicker/css")
+@Styles.Render("~/AdminLTE/plugins/icheck/css")
+@Styles.Render("~/AdminLTE/plugins/colorpicker/css")
+@Styles.Render("~/AdminLTE/plugins/timepicker/css")
+@Styles.Render("~/AdminLTE/plugins/select2/css")
+@Styles.Render("~/AdminLTE/dist/css")
+@Styles.Render("~/AdminLTE/dist/css/skins")
+@Styles.Render("~/AdminLTE/plugins/datatables/css")
+
+
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+                <form class="form-horizontal" id="frmDetail" method="post" action="@Url.Action("ActionGenerate")">
+                    <div class="box-header">
+                        <label for="ZoneName" class="col-sm-2 control-label">@Resources.Language.Factory</label>
+                        <div class="col-sm-3">
+                            <select class="form-control select2" id="FactoryId" name="FactoryId" style="width: 100%;">
+                                @{
+                                    int intFactoryId = int.Parse(Request.Params["FactoryId"].ToString());
+                                    List<FactoryModels> fList = new List<FactoryModels>();
+                                    fList = new FactoryModels().GetList();
+                                }
+                                @foreach (FactoryModels f in fList)
+                                {
+                                    string strCheck = "";
+                                    if (f.Id == intFactoryId) { strCheck = " selected "; }
+                                <option value="@f.Id" @strCheck>@f.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <a id="btnLoadMatrix" href="#" class="btn btn-primary">
+                            <i class="fa fa-search"></i>&nbsp;&nbsp;@Resources.Language.View &nbsp;
+                        </a>
+
+                        <div style="float:right;">
+                            <a href="@Url.Action("Index", new { FactoryId = intFactoryId })" class="btn btn-info">
+                                <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        @{
+                            List<ZoneModels> lstZone = new List<ZoneModels>();
+                            lstZone = new ZoneModels().GetList();
+                            List<LineModels> lstLine = new List<LineModels>();
+                            lstLine = new LineModels().GetList(intFactoryId);
+                            int iLine = 1, iZone = 1;
+                        }
+                        <table id="nodelist" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    @foreach (ZoneModels z in lstZone)
+                                    {
+                                        <th>@z.Name</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (LineModels l in lstLine)
+                                {
+                                    <tr>
+                                        <td>@l.Name</td>
+                                        @for (iZone = 1; iZone <= lstZone.Count; iZone++)
+                                        {
+                                            <td>
+                                                <input type="text" name="txt-@iLine-@iZone" class="form-control" value="" />
+                                            </td>
+                                        }
+                                    </tr>
+                                    iLine++;
+                                }
+                            </tbody>
+                        </table>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="padding-top: 10px;">
+                                <input type="checkbox" class="flat-red" name="ContinueValue" checked>
+                                <span><b>&nbsp;@Resources.Language.ContinueIncreaseLine</b></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;@Resources.Language.AutoGenerate &nbsp;</button>
+                        <a href="@Url.Action("Index", new { FactoryId = intFactoryId })" class="btn btn-info pull-right">
+                            <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                        </a>
+                    </div>
+                    <!-- /.box-footer -->
+                </form>
+
+</div>
+
+        </div>
+    </div>
+ @section Scripts {
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    @Scripts.Render("~/Scripts/Tables/Data")
+    @Scripts.Render("~/AdminLTE/plugins/select2/js")
+    @Scripts.Render("~/AdminLTE/plugins/input-mask/js")
+    @Scripts.Render("~/AdminLTE/plugins/momentjs/js")
+    @Scripts.Render("~/AdminLTE/plugins/daterangepicker/js")
+    @Scripts.Render("~/AdminLTE/plugins/colorpicker/js")
+    @Scripts.Render("~/AdminLTE/plugins/timepicker/js")
+    @Scripts.Render("~/AdminLTE/plugins/icheck/js")
+    @Scripts.Render("~/Scripts/Forms/Advanced")
+}

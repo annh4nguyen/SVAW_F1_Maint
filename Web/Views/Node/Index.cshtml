@@ -1,0 +1,127 @@
+﻿@model List<avSVAW.Models.NodeForm>
+@{
+    ViewBag.Title = Resources.Language.Node;
+    ViewBag.SubTitle = Resources.Language.List + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header">
+
+                @*<label for="FactoryName" class="col-sm-2 control-label">@Resources.Language.Factory</label>
+        <div class="col-sm-3">
+            <select class="form-control select2" id="FactoryId" name="FactoryId" style="width: 100%;">
+                @{
+                    int intFactoryId = 0;
+                    if(Request.Params["FactoryId"] != null)
+                    {
+                        intFactoryId = int.Parse(Request.Params["FactoryId"].ToString());
+                    }
+                                          }
+                @foreach (var f in ViewBag.Factories)
+                {
+                    string strCheck = "";
+                    if (f.Id == intFactoryId) { strCheck = " selected "; }
+                    <option value="@f.Id" @strCheck>@f.Name</option>
+                }
+            </select>
+        </div>
+        <button id="btnViewData" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;&nbsp;@Resources.Language.View &nbsp;</button>*@
+
+                @*                        @Html.ActionLink("Add New Record", "Insert", null, new { @class = "btn btn-success" })*@
+                <div style="float:right;">
+                    @*<a href="@Url.Action("AutoGenerate", new { FactoryId = intFactoryId })" class="btn btn-info">
+                <i class="fa  fa-table"></i>&nbsp; @Resources.Language.AutoGenerate &nbsp;
+            </a>
+            <a href="@Url.Action("ClearAll", new { FactoryId = intFactoryId })" class="btn btn-warning" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                <i class="fa fa-trash-o"></i>&nbsp; @Resources.Language.ClearAll &nbsp;
+            </a>*@
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-file-o"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                @{
+                    //List<ZoneModels> lstZone = new List<ZoneModels>();
+                    //lstZone = new ZoneModels().GetList();
+                    //List<LineModels> lstLine = new List<LineModels>();
+                    //lstLine = new LineModels().GetList(intFactoryId);
+                    //List<NodeModels> Model = new List<NodeModels>();
+                    //Model = new NodeModels().GetList(intFactoryId);
+                    int iLine = 1, iZone = 1, iNode = 1;
+                    //NodeModels curNode = new NodeModels();
+                    //if (Model.Count > 0)
+                    //{ curNode = Model[0]; }
+                    var curNode = Model[0];
+                }
+                <table id="nodelist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;@Resources.Language.Zone</th>
+                            @foreach (var z in ViewBag.Zones)
+                            {
+                                <th style="background-color:@z.Color;text-align:center;">@z.Name</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var l in ViewBag.Lines)
+                        {
+                            <tr>
+                                <td>@l.Name</td>
+                                @foreach (var z in ViewBag.Zones)
+                                {
+                                    if (Model.Count > 0)
+                                    {
+                                        curNode = Model[0];
+                                        iNode = 1;
+                                    }
+                                    <td style="background-color:@z.Color">
+                                        <table class="table table-bordered tablenode">
+                                            <tr>
+                                                @while (iNode <= Model.Count)
+                                                {
+                                                    if (curNode.LineId == l.Id && curNode.ZoneId == z.Id)
+                                                    {
+                                                        string strbgcolor = "", text = curNode.Name;
+                                                        if (!(bool)curNode.Active)
+                                                        {
+                                                            strbgcolor = "background-color:#ddd";
+                                                            text = "<strike>" + text + "</strike>";
+                                                        }
+
+                                                        <td style="@strbgcolor">
+                                                            <a href="/Node/Edit/@curNode.Id">
+                                                                <div style="height:100%;width:100%; text-align:center;">
+                                                                    @curNode.Name
+                                                                </div>
+                                                            </a>
+                                                        </td>
+                                                    }
+                                                    if (iNode < Model.Count)
+                                                    {
+                                                        curNode = Model[iNode];
+                                                    }
+                                                    iNode++;
+                                                }
+                                            </tr>
+                                        </table>
+                                    </td>
+                                }
+                            </tr>
+                            iLine++;
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>

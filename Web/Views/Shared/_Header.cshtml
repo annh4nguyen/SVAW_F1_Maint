@@ -1,0 +1,78 @@
+﻿<header class="main-header">
+    @{
+        var session = (Model.DataModel.tblUser)Session[Common.GlobalConstants.USER_SESSION];
+        var sessionLange = Session[Common.GlobalConstants.LANG_SESSION];
+        var key = "vietnam.png";
+        if (sessionLange != null)
+        {
+            string lang = Convert.ToString(sessionLange);
+                if (lang.ToLower().CompareTo("vi") == 0 || string.IsNullOrEmpty(lang))
+                {
+                 key = "vietnam.png";
+                }else if (lang.ToLower().CompareTo("en") == 0 || string.IsNullOrEmpty(lang))
+                {
+                 key = "uk.png";
+                }
+           
+        }
+    }
+    @if (session != null)
+    {
+     <!-- Logo -->
+        <a href="/Home/Index" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><img src="/assets/img/favicon-small.png" alt="..." style="width: 80%"></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><img src="/assets/img/logo.png" alt="..." style="width: 80%"></span>
+        </a>
+    <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!-- Messages: style can be found in dropdown.less-->
+                    <!-- Notifications: style can be found in dropdown.less -->
+                    <!-- Tasks: style can be found in dropdown.less -->
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown ">
+                        <a class="language-en dropdown-toggle" data-toggle="dropdown" href="#"><img src="~/assets/img/@key" /></a> 
+                        <ul class="dropdown-menu" style="width:50px;">
+                            <li style="border-bottom:1px solid #f4f4f4;"> <a class="language-en" href="/Report/SetSession?language=en"><img style="margin-right:10px;" src="~/assets/img/uk.png" />@Resources.Language.EN</a></li>
+                            <li> <a class="language-vi" href="/Report/SetSession?language=vi"><img  style="margin-right:10px;" src="~/assets/img/vietnam.png" />@Resources.Language.VI</a></li>
+                         </ul>
+                    </li>
+                   
+                    <li class="dropdown user user-menu">
+                        <a href="/User/SelfEdit/@session.ID">
+                            @*@if (@session.Avatar != null)
+                            {
+                                <img src="@session.Avatar" class="user-image" alt="User Image">
+                            }
+                            else
+                            {
+                                <img src="/assets/img/user.png" class="user-image" alt="User Image">
+                            }*@
+
+                            <img src="/assets/img/user.png" class="user-image" alt="User Image">
+                            <span class="hidden-xs">@session.FullName</span>
+                        </a>
+
+                    </li>
+                    <!-- Control Sidebar Toggle Button -->
+                    <li>
+                        <a href="/Login/Logout"><i class="fa fa-sign-out"></i></a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    }
+    <script>
+        $(document).ready(function(){
+           
+        });
+    </script>
+</header>

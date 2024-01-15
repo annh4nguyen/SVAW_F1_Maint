@@ -1,0 +1,97 @@
+﻿@using avAndon.Models;
+@{
+    ViewBag.Title = Resources.Language.Event;
+    ViewBag.SubTitle = Resources.Language.List + " " + Resources.Language.Event;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Menu {
+    @Scripts.Render("~/Scripts/Tables/Data/menu")
+    @Scripts.Render("~/Scripts/Monitoring/EventList-menu.js")
+}
+
+@Styles.Render("~/AdminLTE/plugins/datatables/css")
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+                    <div class="box-body">
+                        <table id="EventList" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>@Resources.Language.Node</th>
+                                    <th>@Resources.Language.Line</th>
+                                    <th>@Resources.Language.Zone</th>
+                                    <th>@Resources.Language.Event</th>
+                                    <th>@Resources.Language.Start</th>
+                                    <th>@Resources.Language.Process</th>
+                                    <th>@Resources.Language.Done</th>
+                                    <th>@Resources.Language.WaitDuration</th>
+                                    <th>@Resources.Language.ProcessDuration</th>
+                                    <th>@Resources.Language.TotalDuration</th>
+                                    <th>@Resources.Language.Description</th>
+                                </tr>
+                            </thead>
+                            @if (Model.Count > 0)
+                            {
+                                int iCount = 0;
+                                string strColor = "", StartTime = "",  ProcessTime = "", DoneTime = "";
+                                <tbody>
+                                    @foreach (EventModels ev in Model)
+                                    {
+                                        iCount++;
+
+                                        StartTime = ev.StartTime.ToString("HH:mm:ss");
+
+                                        if (ev.ProcessTime != DateTime.MinValue) {
+                                            ProcessTime = ev.ProcessTime.ToString("HH:mm:ss");
+                                        }
+                                        else {
+                                            ProcessTime = "";
+                                        }
+
+                                        if (ev.DoneTime != DateTime.MinValue) {
+                                            strColor = "#FFF";
+                                            DoneTime = ev.DoneTime.ToString("HH:mm:ss");
+                                        }
+                                        else {
+                                            strColor = ev.EventDefColor;
+                                            DoneTime = "";
+                                        }
+
+
+                                        strColor = " style=background-color:" + strColor;
+                                        <tr>
+                                            <td @strColor>@iCount</td>
+                                            <td @strColor>@ev.NodeCode</td>
+                                            <td @strColor>@ev.LineCode</td>
+                                            <td @strColor>@ev.ZoneName</td>
+                                            <td @strColor>@ev.EventDefName</td>
+                                            <td @strColor>@StartTime</td>
+                                            <td @strColor>@ProcessTime</td>
+                                            <td @strColor>@DoneTime</td>
+                                            <td @strColor>@ev.WaitDuration</td>
+                                            <td @strColor>@ev.ProcessDuration</td>
+                                            <td @strColor>@ev.TotalDuration</td>
+                                            <td @strColor>@ev.Description </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+
+                        </table>
+                    </div>
+
+                @Html.Partial("~/Views/EventDef/_MonitoringStatus.cshtml")
+
+
+            </div>
+
+        </div>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }

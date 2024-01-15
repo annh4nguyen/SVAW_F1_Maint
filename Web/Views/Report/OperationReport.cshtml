@@ -1,0 +1,370 @@
+﻿
+@model List<avSVAW.Models.OperationForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.Operation;
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<script type="text/javascript" src="~/Reports/charts/loader.js"></script>
+@*<script src="~/Report/jspdf/jspdf.min.js"></script>
+<script src="~/Report/jspdf/html2canvas.js"></script>*@
+@*<script src="~/Report/jspdf/xeponline.jqplugin.js"></script>*@
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: gray;
+    }
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("OperationReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <label class="control-label">@Resources.Language.Day</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="ReportDate" name="ReportDate" data-format="yyyy/MM/dd" value="@ViewBag.ReportDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- load template -->
+                    @Html.Partial("~/Views/Common/TempNodeType.cshtml")
+                    @Html.Partial("~/Views/Common/TempWorkShift.cshtml")
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2">&nbsp;
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" onclick="CreateOperationTimeline()" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.ViewReport</button>
+                        &nbsp;
+                        @*<button type="button" id="btnExportPDF" onclick="ExportPDF();" class="btn btn-warning"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp;Xuất Biểu đồ</button>
+            &nbsp;*@
+                    <button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;@Resources.Language.ExportExcel</button>
+                        &nbsp;
+                    </div>
+                </div>
+
+                    }
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <!-- Report container -->
+                    <div id="divReportOperationContainer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            CreateOperationTimeline();
+        });
+
+        function ExportExcel() {
+            var url = '@Url.Action("OperationToExcel", "Report")';
+            var reportdate = $("#ReportDate").val();
+            var nodetype = $("#NodeType").val();
+             var WorkShift = $("#WorkShift").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?ReportDate=' + reportdate + '&NodeType=' + nodetype+'&WorkShift='+WorkShift;
+            window.location.href = ExcelURL;
+        };
+         function ExportPDF() {
+            var reportdate = $("#ReportDate").val();
+            var nodetype = $("#NodeType").val();
+            $.ajax({
+                url: "/Report/PrintOperationChart",
+                data: {
+                    ReportDate: reportdate,
+                    NodeType: nodetype
+                },
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //alert(result);
+                    window.open(result, '_blank');
+                    //console.log(result);
+                    //$.each(result, function (key, item) {
+                    //    $("#CustomerId").append("<option value='" + item.ID + "'>" + item.Name + "</option>");
+                    //});
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+                    alert("Có lỗi xảy ra khi tạo báo cáo");
+                    //alert(errormessage.responseText);
+                }
+
+            });
+        }
+
+        function CreateOperationTimeline() {
+
+            //Get condition
+            var reportdate = $("#ReportDate").val();
+            var nodetype = $("#NodeType").val();
+            var WorkShift = $("#WorkShift").val();
+            //alert(reportdate);
+            $.ajax({
+                //Get Data List ("OperationReport", "SummaryEvent",
+                url: '/Report/GetOperationReport?ReportDate=' + reportdate + '&NodeType=' + nodetype+'&WorkShift='+WorkShift,
+                type: 'POST',
+                contentType: 'application/html',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+                    DataList = data;
+                    var divOperationContainer = $('#divReportOperationContainer');
+                    //var divChartContainer = $('#divChartOperationContainer');
+                    divOperationContainer.empty();
+
+                    //Legend
+                    //divOperationContainer.append('<div id="legendContainer" class="LegendContainer"></div>');
+                    //var divlegendContainer = $('#legendContainer');
+                    //divlegendContainer.append(strLegend);
+
+
+                    //alert(DataList.length);
+                    divOperationContainer.append('<div id="chartContainer" style="height: 100%; width: 100%; min-height:3600px"></div>');
+                    google.charts.load("current", { packages: ["timeline"] });
+                    google.charts.setOnLoadCallback(GoogleDrawTimeline);
+
+                    //End of Success
+                },
+                error: function (e) {
+                    alert("Error loading Operation Detail Report!");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });;
+            //$('#divLoadingReport').html('');
+        }
+
+    function GoogleDrawTimeline() {
+
+       // alert(DataList.length);
+        var container = document.getElementById('chartContainer');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'string', id: 'NodeName' });
+        dataTable.addColumn({ type: 'number', id: 'NodeId' });
+        dataTable.addColumn({ type: 'string', id: 'EventDefName' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        //return;
+        var arrColorDef = ["#228b22", "#f31818", "#0ED847", "#0ED847"];
+        if (DataList.length) {
+            if (DataList[0].EventDefId == 2) {
+                arrColorDef = ["#f31818", "#228b22", "#0ED847", "#0ED847"];//Dừng trước
+            }
+        }
+
+        for (var j = 0; j < DataList.length; j++) {
+            var item = DataList[j];
+            //alert(item.StartTime + "~" + item.FinishTime);
+            //console.log(item.NodeName + '~' + item.EventDefName + '~' + new Date(item.StartTime) + '~' + new Date(item.FinishTime));
+            dataTable.addRow([item.NodeName, item.NodeId, item.EventDefName, new Date(item.StartTime.replace(/-/g, "/")), new Date(item.FinishTime.replace(/-/g, "/"))]);
+            //arrColors.push(arrColorDef[item.EventDefId - 1]);
+
+            //alert(arrColorDef[item.EventDefId]);
+            //dataTable.addRow([item.NodeName, item.NodeId, item.EventDefName, item.StartTime, item.FinishTime]);
+        }
+
+        var d = $("#ReportDate").val();
+
+        var _day = parseInt(d.substr(0, 2)), _month = parseInt(d.substr(3, 2)); _year = parseInt(d.substr(6, 4));
+        //console.log(new Date(_year, _month, _day, 0, 0, 0));
+        //console.log(new Date(_year, _month, _day, 23, 59, 59));
+        var options = {
+            enableInteractivity: true,
+            colors: arrColorDef,
+            hAxis: {
+                format: 'HH:mm',
+                gridlines: { count: 24 },
+                //minValue: new Date(_year, _month, _day, 0, 0, 0),
+                //maxValue: new Date(_year, _month, _day, 23, 59, 59)
+            },
+            timeline: {
+                showBarLabels: false,
+                enableInteractivity: false,
+                groupByRowLabel: true,
+                barLabelStyle: { fontSize: '12.3' },
+                rowLabelStyle: { fontSize: '12' }
+            },
+            height: 4840
+
+        };
+
+
+        var view = new google.visualization.DataView(dataTable);
+        view.setColumns([0, 2, 3, 4]);
+
+        //google.visualization.events.addListener(chart, 'ready', function () {
+        //    container.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        //    console.log(chart_div.innerHTML);
+        //  });
+        //var btnSave = document.getElementById('btnExportPDF');
+        //btnSave.addEventListener('click', function () {
+        //    var doc = new jsPDF();
+        //    doc.fromHTML(container, 0, 0);
+        //    doc.save('chart.pdf');
+        //  }, false);
+
+        google.visualization.events.addListener(chart, 'onmouseover', function (e) {
+            var row = e.row;
+            if (row != null) {
+                var content = '<div class="custom-tooltip" style="padding:2px;"><h5 style="border-bottom:1px solid #CCC;padding-bottom:10px;"><b>' + dataTable.getValue(row, 2) + '</b></h5>' +
+                    '<div><b>[' + getDate(dataTable.getValue(row, 3)) + ' -  ' + getDate(dataTable.getValue(row, 4)) + ']</b></div>';
+                //var reason = dataTable.getValue(row, 8);
+
+                content += '<div><b>Duration: ' + Duration(dataTable.getValue(row, 3), dataTable.getValue(row, 4)) + '</b></div>'; //generate tooltip content
+                //content += '<div><b>' + reason + '</b></div>'; //generate tooltip content
+
+                content += '</div>';
+                var tooltips = document.getElementsByClassName("google-visualization-tooltip");
+                for (var i = 0; i < tooltips.length; i++) {
+                    tooltips[i].innerHTML = content;
+                }
+            }
+        });
+
+
+
+        chart.draw(view, options);
+
+        //google.visualization.events.addListener(chart, 'onmouseover', function(e) {
+        //    setTooltipContent(dataTable,e.row);
+        //});
+        //$('#ExportPDF').on('click', function () {
+        //    var doc = new jsPDF();
+        //    doc.addImage(chart.getImageURI, 0, 0);
+        //    doc.save('chart.pdf');
+        //});
+
+        }
+
+
+        function Duration(start, finish) {
+            var _dateStart = new Date(start);
+            var _dateFinish = new Date(finish);
+
+            var msec = Math.abs(_dateFinish - _dateStart) / 1000;
+            /*
+            var difference = _dateFinish - _dateStart;
+            var diff_result = new Date(difference);
+            var msec = diff_result.getSeconds();
+            */
+
+            var curr_hour = Math.floor(msec / 60 / 60);
+            msec -= curr_hour * 60 * 60;
+
+            var curr_min = Math.floor(msec / 60);
+            msec -= curr_min * 60;
+
+            var curr_sec = msec;
+
+            if (curr_hour < 10) {
+                curr_hour = "0" + curr_hour;
+            }
+            if (curr_min < 10) {
+                curr_min = "0" + curr_min;
+            }
+            if (curr_sec < 10) {
+                curr_sec = "0" + curr_sec;
+            }
+            //var date = year + "/" + month + "/" + day + " " + curr_hour + ":" + curr_min + ":" + curr_sec;
+            var date = curr_hour + ":" + curr_min + ":" + curr_sec;
+
+            return date;
+
+        }
+
+        function getDate(dateObject) {
+            var d = new Date(dateObject);
+            var day = d.getDate();
+            var month = d.getMonth() + 1;
+            var year = d.getFullYear();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            if (month < 10) {
+                month = "0" + month;
+            }
+            var curr_hour = d.getHours();
+            var curr_min = d.getMinutes();
+            var curr_sec = d.getSeconds();
+            if (curr_hour < 10) {
+                curr_hour = "0" + curr_hour;
+            }
+            if (curr_min < 10) {
+                curr_min = "0" + curr_min;
+            }
+            if (curr_sec < 10) {
+                curr_sec = "0" + curr_sec;
+            }
+            //var date = year + "/" + month + "/" + day + " " + curr_hour + ":" + curr_min + ":" + curr_sec;
+            var date = curr_hour + ":" + curr_min + ":" + curr_sec;
+
+            return date;
+        }
+    //function setTooltipContent(dataTable,row) {
+    //if (row != null) {
+    //    var content = '<div class="custom-tooltip" ><h1>' + dataTable.getValue(row, 0) + '</h1><div>' + dataTable.getValue(row, 1) + '</div></div>'; //generate tooltip content
+    //    var tooltip = document.getElementsByClassName("google-visualization-tooltip")[0];
+    //    tooltip.innerHTML = content;
+    //}
+//}
+    function ExportPDF() {
+            var pdf = new jsPDF('p', 'pt', 'letter');
+         pdf.addHTML(document.body, function () {
+             pdf.save('Test.pdf');
+         });
+    }
+
+    </script>
+
+
+}
+

@@ -1,0 +1,67 @@
+﻿@model Model.DataModel.tblWorkingShift
+@{
+    ViewBag.Title = Resources.Language.WorkingShift;
+    ViewBag.SubTitle = Resources.Language.Create + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+
+            @using (Html.BeginForm("Create", "WorkingShift", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="box-body">
+
+                    <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, Resources.Language.WorkingShift, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.StartHour, Resources.Language.Start, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.StartHour, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.StartMinute, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.FinishHour, Resources.Language.Finish, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.FinishHour, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.FinishMinute, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;Ghi lại&nbsp;</button>
+                        <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                            <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                        </a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>

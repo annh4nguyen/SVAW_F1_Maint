@@ -1,0 +1,73 @@
+﻿@model List<Model.DataModel.tblEventDef>
+@{
+    ViewBag.Title = Resources.Language.EventDef;
+    ViewBag.SubTitle = Resources.Language.List + " " + Resources.Language.EventDef;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header">
+                <div style="float:right;">
+                    @*                        @Html.ActionLink("Add New Record", "Insert", null, new { @class = "btn btn-success" })*@
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-file-o"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.Name</th>
+                            <th>@Resources.Language.Description</th>
+                            <th>@Resources.Language.Color</th>
+                            <th style="width: 20%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                <tr>
+                                    <td>@ev.zOrder</td>
+                                    <td>
+                                        @ev.Name
+                                    </td>
+                                    <td>@ev.Description </td>
+                                    <td style="background-color:@ev.Color">
+                                        &nbsp;
+                                    </td>
+                                    <td>
+                                        @*@Html.ActionLink("Edit ", "Edit", new { EventDefID = dr["Id"].ToString() }, new { @class = "btn  btn-primary" })*@
+                                        <a href="/EventDef/Edit/@ev.Id" class="btn btn-primary  btn-xs">
+                                            <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                        </a>
+                                        &nbsp;
+                                        <a href="/EventDef/Delete/@ev.Id" class="btn btn-danger  btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                                            <i class="fa fa-trash"></i> &nbsp;@Resources.Language.Delete&nbsp;&nbsp;
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

@@ -1,0 +1,103 @@
+﻿@model List<Model.DataModel.tblNodeType>
+@{
+    ViewBag.Title = Resources.Language.MaxStopTime;
+    ViewBag.SubTitle = Resources.Language.MaxStopTime + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.Title
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+
+
+    <script>
+        function SaveTimeOut() {
+            //$("#divLoading").css("display", "block");
+            //$("#Save").attr("disabled", true);
+
+            var strNodeTypeIds = "", strTimeOuts = "";
+            $("input[id^='NodeType_']").each(function () {
+
+                var _id = $(this).attr('id').split('_')[1];
+                strNodeTypeIds += _id + ';'
+                strTimeOuts += $(this).val() + ";";
+            });
+
+ 
+            $.ajax({
+                url: "/TimeOut/UpdateTimeOut",
+                data: {
+                    NodeTypes: strNodeTypeIds,
+                    TimeOuts: strTimeOuts
+                },
+                type: "POST",
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (result) {
+                    //window.location.replace("/WorkingPlan/Index");
+                },
+                error: function (errormessage) {
+                    console.log("error", errormessage);
+                    alert("Có lỗi");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });
+
+
+        }
+
+        $(document).ready(function () {
+     
+        })
+    </script>
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("Create", "NodeType", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+
+            <div class="box-body">
+
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        <label class="control-label">@Resources.Language.NodeType</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="control-label">@Resources.Language.MaxStopTime (@Resources.Language.Minute)</label>
+                    </div>
+                </div>
+
+                @foreach (var nodetype in Model)
+                {
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <label class="control-label">@nodetype.Name</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" id="NodeType_@nodetype.Id" value="@nodetype.MaxStopTime" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
+                }
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="button" onclick="SaveTimeOut();" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                    <a href="~/" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+            }
+
+
+        </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

@@ -1,0 +1,519 @@
+﻿
+@model List<avSVAW.Models.TotalStopForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Report + " " + Resources.Language.Running;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+
+}
+@section header{
+    @ViewBag.Title
+}
+<script src="~/assets/js/Chart.min.js"></script>
+<style>
+    .working-percent {
+        float:left;
+        background-color: forestgreen;
+        color:white;
+        text-align:center;
+    }
+    .un-working-percent {
+        float:right;
+        background-color: gray;
+    }
+
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("StopReportByTypeAndWorkShift", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">Ngày</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="SelectDate" name="SelectDate" data-format="yyyy/MM/dd" value="@ViewBag.ChooseDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.NodeType</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="NodeType" name="NodeType" class="form-control col-md-7 col-xs-12">
+                            @{
+                                var strSelect = "";
+
+                                for (var iType = 0; iType < ViewBag.NodeTypes.Count; iType++)
+                                {
+                                    if (ViewBag.NodeTypes[iType].Value == ViewBag.NodeType.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+                                    <option value="@ViewBag.NodeTypes[iType].Value" @strSelect>@ViewBag.NodeTypes[iType].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.WorkingShift</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="WorkShift" name="WorkShift" class="form-control col-md-7 col-xs-12">
+                            @{
+                                var strSelectWS = "";
+
+                                for (var iType = 0; iType < ViewBag.WorkShifts.Count; iType++)
+                                {
+                                    if (ViewBag.WorkShifts[iType].Value == ViewBag.WorkShift.ToString())
+                                    {
+                                        strSelectWS = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelectWS = "";
+                                    }
+                                    <option value="@ViewBag.WorkShifts[iType].Value" @strSelectWS>@ViewBag.WorkShifts[iType].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label">Biểu đồ</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="isReport" name="isReport" class="form-control col-md-7 col-xs-12">
+                            @{
+                                var strSelectRep = "";
+
+                                for (var iReport = 0; iReport < ViewBag.ReportTypes.Count; iReport++)
+                                {
+                                    if (ViewBag.ReportTypes[iReport].Value == ViewBag.isViewReport.ToString())
+                                    {
+                                        strSelectRep = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelectRep = "";
+                                    }
+                                    <option value="@ViewBag.ReportTypes[iReport].Value" @strSelectRep>@ViewBag.ReportTypes[iReport].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.ViewReport</button>
+                            &nbsp;
+                            &nbsp;
+                            @*<button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Xuất Excel</button>*@
+                            &nbsp;
+                            &nbsp;
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    @{
+                        int StopCount = 0, iCount = 1;
+                        double TotalStopTime = 0;
+                    }
+
+                    <input type="hidden" id="totalTimeWorkShift" name="totalTimeWorkShift" value="@ViewBag.totalTimeWorkShift" />
+                    <table id="EFF" style="display:none;" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">#</th>
+                                <th rowspan="2">@Resources.Language.Node</th>
+                                <th rowspan="2">@Resources.Language.NodeType</throwspan="2">
+                                <th colspan="2">@Resources.Language.Running</th>
+                                <th colspan="3">@Resources.Language.Stop</th>
+                                @*<th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.NumberOfStop</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.StopWorkingPlan (@Resources.Language.Minute)</th>*@
+                            </tr>
+                            <tr>
+                                <th>@Resources.Language.Quantity</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.Quantity</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.StopWorkingPlan (@Resources.Language.Minute)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                
+                            <tr>
+                                <td  data-run="@item.RunningDuration"  data-stop="@item.StopDuration">
+                                    @iCount
+                                </td>
+
+                                <td data-name="@item.NodeName">
+                                    <a href="/Report/StopDetailReportByWorkShif?SelectDate=@ViewBag.SelectDate&NodeId=@item.NodeId&WorkShift=@ViewBag.WorkShift&isReport=@ViewBag.isViewReport">
+                                        @item.NodeName
+                                    </a>
+                                </td>
+
+                                <td>
+                                    @item.NodeTypeName
+                                </td>
+
+                                <td style="text-align:right">
+                                    @item.NumberOfRunning.ToString("#,##0")
+                                </td>
+
+                                <td style="text-align:right">
+                                    @item.strRunningDuration
+                                </td>
+
+
+                                <td style="text-align:right">
+                                    @item.NumberOfStop.ToString("#,##0")
+                                </td>
+
+                                <td  style="text-align:right">
+                                    @item.strStopDuration
+                                </td>
+                                <td  style="text-align:right">
+                                    @item.strPlanStopDuration
+                                </td>
+
+                                @{
+                                    iCount++;
+                                }
+
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <canvas id="myChart" style="display:none;" height="30%" width="80%"></canvas>
+
+                    <div class="ln_solid"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+        function ExportExcel() {
+            var url = '@Url.Action("ExportEffToExcel", "Report")';
+            var _selectDate = $('#SelectDate').val();
+            var _nodetype = $("#NodeType").val();
+            var WorkShift = $("#WorkShift").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?FromDate=' + _selectDate + '&ToDate=' + _selectDate + '&NodeType=' + _nodetype + '&WorkShift= ' + WorkShift;
+            window.location.href = ExcelURL;
+    };
+
+        $(function () {
+            $('#inventory').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+        })
+        $(document).ready(function () {
+             if(@ViewBag.isViewReport == 0) {
+                    $("#myChart").hide();
+                    $("#EFF").show();
+                }
+                else
+                {
+                    $("#myChart").show();
+                    $("#EFF").hide();
+                    GetChart();
+                }
+
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+
+        });
+        function GetChart() {
+            addPlugin();
+            var ctx = document.getElementById("myChart").getContext("2d");
+            var totalTimeWorkShift = Number($("#totalTimeWorkShift").val());
+            var labels = [];
+            var dataRunning = [];
+            var dataStop = [];
+            var dataStopPlan = [];
+            var tb = $("#EFF tbody tr");
+            tb.each(function () {
+                var tds = $(this).find("td");
+                var count = "";
+                var labelname = "";
+                var timeRun = 0;
+                var timeStop = 0;
+                tds.each(function (key, val) {
+                        if (key == 0) {
+                            timeRun = Number($(this).attr('data-run'));
+                            timeStop = Number( $(this).attr('data-stop'));
+                            if (totalTimeWorkShift > 0) {
+                                var perRun = 100*(timeRun / totalTimeWorkShift);
+                                dataRunning.push(Math.round(perRun.toFixed(2)));
+
+                                var perStop = 100*(timeStop / totalTimeWorkShift);
+                                dataStop.push(Math.round(perStop.toFixed(2)));
+                            } else {
+                                dataRunning.push(0);
+                                dataStop.push(0);
+                            }
+                        }
+                        if (key == 2) {
+                            count = $(this).html();
+                            count = count.trim() + " máy"
+                        }
+                        if (key == 1) {
+                            var label = $(this).attr('data-name');
+                            labelname = label.trim()
+                        }
+                        //if (key == 3) {
+                        //     var label = $(this).attr('data-id');
+                        //    dataRunning.push(label.trim());
+                        //}
+                        //if (key == 4) {
+                        //     var label = $(this).attr('data-id');
+                        //    dataStop.push(label.trim());
+                        //}
+                        //if (key == 5) {
+                        //     var label = $(this).attr('data-id');
+                        //    dataStopPlan.push(label.trim());
+                        //}
+                });
+                labels.push( labelname  + "\n " + count);
+            });
+            var data = {
+                    labels: labels,
+                    datasets: [{
+                                label: "@Html.Raw(HttpUtility.HtmlDecode(@Resources.Language.Running))",
+                                backgroundColor: "green",
+                                data: dataRunning
+                            }, {
+                                label: "@Html.Raw(HttpUtility.HtmlDecode(@Resources.Language.Stop))",
+                                backgroundColor: "red",
+                                data: dataStop
+                            }
+                    ]
+            };
+
+            var myBarChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: {
+                            legend: {
+                                display: true,
+                            },
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ chạy máy theo ca',
+                                fontSize: 24
+                            },
+                            tooltips: {
+                                enabled: false
+                            },
+                            "hover": {
+                                "animationDuration": 0
+                            },
+                            "animation": {
+                                "duration": 1,
+                                "onComplete": function () {
+                                    var chartInstance = this.chart,
+                                        ctx = chartInstance.ctx;
+
+                                    ctx.font = Chart.helpers.fontString(14, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'bottom';
+                                    this.data.datasets.forEach(function (dataset, i) {
+                                        var meta = chartInstance.controller.getDatasetMeta(i);
+                                        meta.data.forEach(function (bar, index) {
+                                            var data = dataset.data[index] + '%';
+                                            //var hours = Math.floor(data / 60);
+                                            //var minutes = Math.floor(data % 60);
+                                            //if (hours == 0 && minutes == 0) {
+                                            //    data = "";
+                                            //} else {
+                                            //    minutes = Number(minutes) < 10 ? "0" + minutes : minutes;
+                                            //    hours = Number(hours) < 10 ? "0" + hours : hours;
+                                            //    data = hours + ":" + minutes;
+                                            //}
+
+                                            //ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                                            var _y = bar._model.y - 15;
+                                            if (dataset.data[index] > 200) {
+                                                _y = bar._model.y - 10;
+                                            }
+
+                                            ctx.fillText(data, bar._model.x, _y);
+
+                                        });
+                                    });
+                                }
+                            },
+                            scales: {
+                                xAxes: [{
+                                   // stacked: true,
+                                    ticks: {
+                                        fontSize: 14,
+                                    },
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        min: 0, // it is for ignoring negative step.
+                                        max: 100,
+                                        fontSize: 14,
+                                        beginAtZero: true,
+                                        callback: function (value, index, values) {
+                                            if (Math.floor(value) === value) {
+                                                return value;
+                                            }
+                                        }
+                                    },
+                                }]
+                              }
+                        }
+            });
+        }
+        function addPlugin() {
+            //add plugin chartjs
+            Chart.pluginService.register({
+                        beforeInit: function (chart) {
+                            var hasWrappedTicks = chart.config.data.labels.some(function (label) {
+                                return label.indexOf('\n') !== -1;
+                            });
+
+                            if (hasWrappedTicks) {
+                                // figure out how many lines we need - use fontsize as the height of one line
+                                var tickFontSize = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontSize, Chart.defaults.global.defaultFontSize);
+                                var maxLines = chart.config.data.labels.reduce(function (maxLines, label) {
+                                    return Math.max(maxLines, label.split('\n').length);
+                                }, 0);
+                                var height = (tickFontSize + 2) * maxLines + (chart.options.scales.xAxes[0].ticks.padding || 0);
+
+                                // insert a dummy box at the bottom - to reserve space for the labels
+                                Chart.layoutService.addBox(chart, {
+                                    draw: Chart.helpers.noop,
+                                    isHorizontal: function () {
+                                        return true;
+                                    },
+                                    update: function () {
+                                        return {
+                                            height: this.height
+                                        };
+                                    },
+                                    height: height,
+                                    options: {
+                                        position: 'bottom',
+                                        fullWidth: 1,
+                                    }
+                                });
+
+                                // turn off x axis ticks since we are managing it ourselves
+                                chart.options = Chart.helpers.configMerge(chart.options, {
+                                    scales: {
+                                        xAxes: [{
+                                            ticks: {
+                                                display: false,
+                                                // set the fontSize to 0 so that extra labels are not forced on the right side
+                                                fontSize: 0
+                                            }
+                                        }]
+                                    }
+                                });
+
+                                chart.hasWrappedTicks = {
+                                    tickFontSize: tickFontSize
+                                };
+                            }
+                        },
+                        afterDraw: function (chart) {
+                            if (chart.hasWrappedTicks) {
+                                // draw the labels and we are done!
+                                chart.chart.ctx.save();
+                                var tickFontSize = chart.hasWrappedTicks.tickFontSize;
+                                var tickFontStyle = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+                                var tickFontFamily = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+                                var tickLabelFont = Chart.helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+                                chart.chart.ctx.font = tickLabelFont;
+                                chart.chart.ctx.textAlign = 'center';
+                                var tickFontColor = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].fontColor, Chart.defaults.global.defaultFontColor);
+                                chart.chart.ctx.fillStyle = tickFontColor;
+
+                                var meta = chart.getDatasetMeta(0);
+                                var xScale = chart.scales[meta.xAxisID];
+                                var yScale = chart.scales[meta.yAxisID];
+
+                                chart.config.data.labels.forEach(function (label, i) {
+                                    label.split('\n').forEach(function (line, j) {
+                                        chart.chart.ctx.fillText(line, xScale.getPixelForTick(i + 0.5), (chart.options.scales.xAxes[0].ticks.padding || 0) + yScale.getPixelForValue(yScale.min-1) +
+                                            // move j lines down
+                                            j * (chart.hasWrappedTicks.tickFontSize + 2));
+                                    });
+                                });
+
+                                chart.chart.ctx.restore();
+                            }
+                        }
+                    });
+        }
+    </script>
+
+
+}
+

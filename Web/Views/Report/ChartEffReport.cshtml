@@ -1,0 +1,346 @@
+﻿
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart + " " + Resources.Language.EffOperation;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<script src="~/assets/js/Chart.min.js"></script>
+
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: #ccc9c9;
+    }
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("ChartEffReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.FromDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="FromDate" name="FromDate" data-format="yyyy/MM/dd" value="@ViewBag.FromDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.ToDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divToDate" class="input-group input-append">
+                            <input id="ToDate" name="ToDate" data-format="yyyy/MM/dd" value="@ViewBag.ToDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- load template -->
+                    @Html.Partial("~/Views/Common/TempNodeType.cshtml")
+                    @Html.Partial("~/Views/Common/TempWorkShift.cshtml")
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="button" onclick="CreateChartEff()" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.ViewReport</button>
+                            &nbsp;
+                            &nbsp;
+                            @*<button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Xuất Excel</button>
+                                &nbsp;
+                                &nbsp;*@
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12" id="ChartContainer">
+        <canvas id="BarChart" height="30%" width="80%"></canvas>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            getPlugin();
+
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+
+        });
+
+        function CreateChartEff() {
+            var fromDate = $("#FromDate").val();
+            var toDate = $("#ToDate").val();
+            var nodetype = $("#NodeType").val();
+            var workShift = $("#WorkShift").val();
+            $.ajax({
+                //Get Data List ("OperationReport", "SummaryEvent",
+                url: '/Report/GetChartEffReport?FromDate=' + fromDate + '&ToDate=' + toDate + '&NodeType=' + nodetype + '&WorkShift=' + workShift,
+                type: 'POST',
+                contentType: 'application/html',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+
+                    var DataValue = [];
+                    var DataLabel = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = data[i];
+                        DataValue.push(obj.WorkingPercent);
+                        DataLabel.push(obj.NodeName);
+                    }
+
+                    DrawChartEff(DataValue, DataLabel);
+                    //End of Success
+                },
+                error: function (e) {
+                    alert("Error loading Operation Detail Report!");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });;
+        }
+
+        function DrawChartEff(DataValue, DataLabel) {
+
+            $('#BarChart').remove();
+            $('#ChartContainer').html('<canvas id="BarChart" height="30%" width="80%"></canvas>');
+            //alert(DataValue);
+            var ctx = document.getElementById('BarChart');
+            Chart.defaults.global.showTooltips = false;
+
+            var color = new Array("#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a");
+
+            
+
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: DataLabel,
+                    datasets: [
+                        {
+                            label: DataLabel,
+                            data: DataValue,
+                            backgroundColor: color,
+                        },
+
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Biểu đồ hiệu suất vận hành máy',
+                        fontSize: 24
+
+                    },
+                    tooltips: {
+                        enabled: false
+                        //mode: 'label',
+                        //callbacks: {
+                        //    label: function (tooltipItem, data) {
+                        //        return;
+                        //        var datasetIndex = tooltipItem.datasetIndex;
+                        //        var datasetLabel = data.datasets[datasetIndex].label;
+                        //        var yLabel = tooltipItem.yLabel;
+                        //        //var sum = data.datasets.reduce((sum, dataset) => {
+                        //        //    return sum + dataset.data[tooltipItem.index];
+                        //        //}, 0);
+                        //        //var percent = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] / sum * 100;
+                        //        //percent = percent.toFixed(0);
+                        //        return  yLabel + '%';
+                        //    }
+                        //}
+                    },
+
+                    "hover": {
+                        "animationDuration": 0
+                    },
+                    "animation": {
+                        "duration": 1,
+                        "onComplete": function () {
+                            var chartInstance = this.chart,
+                                ctx = chartInstance.ctx;
+
+                            ctx.font = Chart.helpers.fontString(24, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            this.data.datasets.forEach(function (dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                meta.data.forEach(function (bar, index) {
+                                    var data = dataset.data[index] + ' %';
+                                    //ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                                    var _y =0;
+                                    //alert(dataset.data[index] > 90);
+                                    if (dataset.data[index] > 90 && dataset.data[index]<100) {
+                                        _y = bar._model.y + 35 ;
+                                    } else if (dataset.data[index] > 100) {
+                                            _y = 90 ;
+                                    } else {
+                                        _y = bar._model.y - 5;
+                                    }
+
+                                    ctx.fillText(data, bar._model.x, _y);
+
+                                });
+                            });
+                        }
+                    },
+
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                fontSize: 24,
+                            },
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                min: 0, // it is for ignoring negative step.
+                                max: 100,
+                                fontSize: 24,
+                                beginAtZero: true,
+                                callback: function (value, index, values) {
+                                    if (Math.floor(value) === value) {
+                                        return value;
+                                    }
+                                }
+                            },
+                        }]
+                    }
+                }
+            });
+        }
+        function getPlugin() {
+            //add plugin chartjs
+            Chart.pluginService.register({
+                        beforeInit: function (chart) {
+                            var hasWrappedTicks = chart.config.data.labels.some(function (label) {
+                                return label.indexOf('\n') !== -1;
+                            });
+
+                            if (hasWrappedTicks) {
+                                // figure out how many lines we need - use fontsize as the height of one line
+                                var tickFontSize = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontSize, Chart.defaults.global.defaultFontSize);
+                                var maxLines = chart.config.data.labels.reduce(function (maxLines, label) {
+                                    return Math.max(maxLines, label.split('\n').length);
+                                }, 0);
+                                var height = (tickFontSize + 2) * maxLines + (chart.options.scales.xAxes[0].ticks.padding || 0);
+
+                                // insert a dummy box at the bottom - to reserve space for the labels
+                                Chart.layoutService.addBox(chart, {
+                                    draw: Chart.helpers.noop,
+                                    isHorizontal: function () {
+                                        return true;
+                                    },
+                                    update: function () {
+                                        return {
+                                            height: this.height
+                                        };
+                                    },
+                                    height: height,
+                                    options: {
+                                        position: 'bottom',
+                                        fullWidth: 1,
+                                    }
+                                });
+
+                                // turn off x axis ticks since we are managing it ourselves
+                                chart.options = Chart.helpers.configMerge(chart.options, {
+                                    scales: {
+                                        xAxes: [{
+                                            ticks: {
+                                                display: false,
+                                                // set the fontSize to 0 so that extra labels are not forced on the right side
+                                                fontSize: 0
+                                            }
+                                        }]
+                                    }
+                                });
+
+                                chart.hasWrappedTicks = {
+                                    tickFontSize: tickFontSize
+                                };
+                            }
+                        },
+                        afterDraw: function (chart) {
+                            if (chart.hasWrappedTicks) {
+                                // draw the labels and we are done!
+                                chart.chart.ctx.save();
+                                var tickFontSize = chart.hasWrappedTicks.tickFontSize;
+                                var tickFontStyle = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+                                var tickFontFamily = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+                                var tickLabelFont = Chart.helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+                                chart.chart.ctx.font = tickLabelFont;
+                                chart.chart.ctx.textAlign = 'center';
+                                var tickFontColor = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].fontColor, Chart.defaults.global.defaultFontColor);
+                                chart.chart.ctx.fillStyle = tickFontColor;
+
+                                var meta = chart.getDatasetMeta(0);
+                                var xScale = chart.scales[meta.xAxisID];
+                                var yScale = chart.scales[meta.yAxisID];
+
+                                chart.config.data.labels.forEach(function (label, i) {
+                                    label.split('\n').forEach(function (line, j) {
+                                        chart.chart.ctx.fillText(line, xScale.getPixelForTick(i + 0.5), (chart.options.scales.xAxes[0].ticks.padding || 0) + yScale.getPixelForValue(yScale.min-5) +
+                                            // move j lines down
+                                            j * (chart.hasWrappedTicks.tickFontSize + 2));
+                                    });
+                                });
+
+                                chart.chart.ctx.restore();
+                            }
+                        }
+                    });
+        }
+    </script>
+
+
+}
+

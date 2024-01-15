@@ -1,0 +1,135 @@
+﻿@model avSVAW.Models.LineForm
+@{
+
+    ViewBag.Title = Resources.Language.Line;
+    ViewBag.SubTitle = Resources.Language.Edit + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+@section Styles{
+    <style>
+
+        /* Create a custom checkbox */
+        .av-checkbox {
+            height: 25px;
+            width: 25px;
+            /*background-color: #eee;*/
+        }
+    </style>
+
+}
+
+@section Scripts{
+    <script>
+        //add css for attach file element
+        var input = $("input:file").css({
+            width: "100%",
+            border: "0.1px solid"
+        });
+    </script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#frmValidate').validate({ // initialize the plugin
+                rules: {
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+
+            //$("#Chk_Active").on('change', function (event) {
+            //    var _value = this.checked;
+            //        if (_value) {
+            //            $("#Active").val('true');
+            //        }
+            //        else {
+            //            $("#Active").val('false');
+            //        }
+            //    });
+        })
+
+    </script>
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("Edit", "Line", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+
+            <div class="box-body">
+
+                <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Code, Resources.Language.Code, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Code, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Name, Resources.Language.Name, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.nOrder, Resources.Language.Order, new { @class = "control-label required" })
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.nOrder, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.nOrder, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-10 col-sm-6 col-xs-12">
+                        @Html.TextBoxFor(model => model.Description, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.FactoryId, Resources.Language.Factory, new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">
+                        @Html.DropDownListFor(model => model.FactoryId, Model.Factories, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.FactoryId, "", new { @class = "text-danger" })
+
+                </div>
+
+
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                    <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+

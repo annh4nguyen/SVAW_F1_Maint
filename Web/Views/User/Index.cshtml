@@ -1,0 +1,78 @@
+﻿
+@model List<avSVAW.Models.UserForm>
+
+@{
+    ViewBag.Title = "Danh sách người dùng";
+}
+@section header{
+    Danh sách người dùng
+}
+
+@section Styles{
+    <style type="text/css">
+        #user-list_wrapper {
+            margin-top: 10px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(function () {
+            $('#user-list').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+        })
+
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body no-padding">
+                <table id="user-list" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Resources.Language.UserName</th>
+                            <th>@Resources.Language.UserFullName</th>
+                            <th>@Resources.Language.Role</th>
+                            <th style="width: 20%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            if (item != null)
+                            {
+                        <tr id="row_@item.ID">
+
+                            <td>@item.UserName</td>
+                            <td>@item.FullName</td>
+                            <td>@item.Role</td>
+                            @*<td>@item.Role</td>*@
+                            <td>
+                                <a href="/User/Edit/@item.ID" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> @Resources.Language.Edit </a>
+                                <a href="/User/Delete/@item.ID" class="btn btn-danger btn-xs" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="fa fa-trash-o"></i> @Resources.Language.Delete </a>
+                            </td>
+                        </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+               
+                <a href="/User/Create">
+                    <button type="button" class="btn btn-success">@Resources.Language.Save</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

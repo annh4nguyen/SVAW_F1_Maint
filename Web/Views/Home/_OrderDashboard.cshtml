@@ -1,0 +1,55 @@
+﻿@model List<avSVAW.Models.FormCarryModel>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h2>Quản lý nhận trả</h2>
+            </div>
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <table id="material_movement" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Loại</th>
+                                <th>Từ</th>
+                                <th>Đến</th>
+                                <th>Ngày xe đi</th>
+                                <th>Mã đơn hàng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row_@item.ID">
+                                    <td>
+                                        <a href="/Carry/Edit/@item.ID/@item.OrderType">@item.DateOrder.GetValueOrDefault().ToString("yyyy/MM/dd")</a>
+                                    </td>
+                                    <td><a href="/Carry/Edit/@item.ID/@item.OrderType">@item.OrderTypeName</a></td>
+                                    <td>
+                                        <a href="/Carry/Edit/@item.ID/@item.OrderType">@item.OrderFromName</a>
+                                    </td>
+                                    <td>
+                                        <a href="/Carry/Edit/@item.ID/@item.OrderType">@item.OrderToName</a>
+                                    </td>
+                                    <td>
+                                        <a href="/Carry/Edit/@item.ID/@item.OrderType">@item.TransportStartDate.GetValueOrDefault().ToString("yyyy/MM/dd")</a>
+                                    </td>
+                                    <td><a href="/Carry/Edit/@item.ID/@item.OrderType">@item.CodeOrder</a></td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="ln_solid"></div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

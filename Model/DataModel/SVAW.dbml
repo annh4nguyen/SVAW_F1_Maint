@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="avSVAWF1" Class="AvaniDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=avSVAWF1;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=EntityFramework" SettingsObjectName="Model.Properties.Settings" SettingsPropertyName="avSVAWF1ConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tblConfigService" Member="tblConfigService">
+    <Type Name="tblConfigService">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExportWorkShift" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ExportWeek" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ExportMonth" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ExportQuarter" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ExportYear" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PathFolder" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="DateInWeek" Type="System.Int16" DbType="Int" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblEventDef" Member="tblEventDefs">
+    <Type Name="tblEventDef">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="zOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Color" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="UsingSound" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="SoundFileName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblEventStatus" Member="tblEventStatus">
+    <Type Name="tblEventStatus">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblFactory" Member="tblFactories">
+    <Type Name="tblFactory">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="IP" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="MaxWaitTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MaxProcessTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblNode" Member="tblNodes">
+    <Type Name="tblNode">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LineId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ZoneId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NodeTypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblNodeDef" Member="tblNodeDefs">
+    <Type Name="tblNodeDef">
+      <Column Name="NodeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NodeName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="LineId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LineName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="ZoneId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZoneName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FactoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FactoryName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="NodeTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NodeTypeName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblZone" Member="tblZones">
+    <Type Name="tblZone">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="Color" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="FactoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblUser" Member="tblUsers">
+    <Type Name="tblUser">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(32)" CanBeNull="true" />
+      <Column Name="Role" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="FullName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Avatar" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Status" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblUserLogged" Member="tblUserLoggeds">
+    <Type Name="tblUserLogged">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="TimeLogged" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblNodeType" Member="tblNodeTypes">
+    <Type Name="tblNodeType">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="Width" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Height" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MaxStopTime" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblWorkingShift" Member="tblWorkingShifts">
+    <Type Name="tblWorkingShift">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="StartHour" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="StartMinute" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FinishHour" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FinishMinute" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TotalMinute" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblWorkingPlan" Member="tblWorkingPlans">
+    <Type Name="tblWorkingPlan">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="WorkingId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Month" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Day" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ShiftId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NodeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblNodeOnline" Member="tblNodeOnlines">
+    <Type Name="tblNodeOnline">
+      <Column Name="NodeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NodeName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="LineId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LineName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="ZoneId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZoneName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FactoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FactoryName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="NodeTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NodeTypeName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
+      <Column Name="UpdateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DataToShow" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="OnlineTimeCount" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="WorkingTimeCount" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="TimeOut" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Planned" Type="System.String" DbType="NVarChar(50)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblStopWorkingPlan" Member="tblStopWorkingPlans">
+    <Type Name="tblStopWorkingPlan">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="WorkingId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NodeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Month" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Day" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FromHour" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FromMinute" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ToHour" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ToMinute" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TotalMinute" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblLine" Member="tblLines">
+    <Type Name="tblLine">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="FactoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblEvent" Member="tblEvents">
+    <Type Name="tblEvent">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NodeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EventDefId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="T3" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="T2" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="T1" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblSummaryEventReport" Member="tblSummaryEventReports">
+    <Type Name="tblSummaryEventReport">
+      <Column Name="Year" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Month" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Day" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WorkShiftId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NodeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="NodeName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="LineId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LineName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="ZoneId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ZoneName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="NodeTypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NodeTypeName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="FactoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NumberOfRunning" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RunningDuration" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="NumberOfStop" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StopDuration" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PlanDuration" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="RunningRate" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblCreatedSummaryReport" Member="tblCreatedSummaryReports">
+    <Type Name="tblCreatedSummaryReport">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblM_Action" Member="tblM_Actions">
+    <Type Name="tblM_Action">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblM_MaterialSide" Member="tblM_MaterialSides">
+    <Type Name="tblM_MaterialSide">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblM_MaterialType" Member="tblM_MaterialTypes">
+    <Type Name="tblM_MaterialType">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="nOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblM_Material" Member="tblM_Materials">
+    <Type Name="tblM_Material">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Hour" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="WarningLevel" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Slide" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ApplyFor" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblM_MaintHistory" Member="tblM_MaintHistories">
+    <Type Name="tblM_MaintHistory">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NodeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaterialId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="ActionDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ActionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ActionUserName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="RunningHour" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="NextAction" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(2048)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblM_MaterialHistory" Member="tblM_MaterialHistories">
+    <Type Name="tblM_MaterialHistory">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MaterialId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateUser" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Hour" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="WarningLevel" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Slide" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ApplyFor" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Function Name="dbo.CloseOrder" Method="CloseOrder">
+    <Parameter Name="ordercode" Type="System.String" DbType="NVarChar(50)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.OpenOrder" Method="OpenOrder">
+    <Parameter Name="ordercode" Type="System.String" DbType="NVarChar(50)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.OpenOnlyOrderReceive" Method="OpenOnlyOrderReceive">
+    <Parameter Name="ordercode" Type="System.String" DbType="NVarChar(50)" />
+    <Return Type="System.Int32" />
+  </Function>
+</Database>

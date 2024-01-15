@@ -1,0 +1,86 @@
+﻿@model Model.DataModel.tblFactory
+@{
+
+    ViewBag.Title = Resources.Language.Factory;
+    ViewBag.SubTitle = Resources.Language.Edit + " " + Resources.Language.Factory;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("Edit", "Factory", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+
+                <div class="box-body">
+
+                    <input type="hidden" name="Id" class="form-control" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Name, Resources.Language.Name, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Description, Resources.Language.Description, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-10 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.Description, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.IP, Resources.Language.IP, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.IP, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.IP, "", new { @class = "text-danger" })
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.MaxWaitTime, Resources.Language.MaxWaitTime, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.TextBoxFor(model => model.MaxWaitTime, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.MaxWaitTime, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.MaxProcessTime, Resources.Language.MaxProcessTime, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.TextBoxFor(model => model.MaxProcessTime, htmlAttributes: new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.MaxProcessTime, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                        <a href="@Url.Action("Index")" class="btn btn-info pull-right">
+                            <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                        </a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,26 @@
+﻿<div class="col-sm-1">
+    <label class="control-label">@Resources.Language.NodeType</label>
+</div>
+<div class="col-sm-2">
+    <select id="NodeType" name="NodeType" class="form-control col-md-7 col-xs-12">
+        @{
+            var strSelect = "";
+
+            for (var iType = 0; iType < ViewBag.NodeTypes.Count; iType++)
+            {
+                if (ViewBag.NodeTypes[iType].Value == ViewBag.NodeType.ToString())
+                {
+                    strSelect = " selected ";
+                }
+                else
+                {
+                    strSelect = "";
+                }
+                <option value="@ViewBag.NodeTypes[iType].Value" @strSelect> @Html.Raw(HttpUtility.HtmlDecode(@ViewBag.NodeTypes[iType].Text))</option>
+            }
+
+
+        }
+
+    </select>
+</div>

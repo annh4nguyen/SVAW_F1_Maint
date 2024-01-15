@@ -1,0 +1,59 @@
+﻿
+<div id="eventdeflist" class="divEventStatus">
+    <div>
+        @{ 
+            List<Model.DataModel.tblEventDef> lst = new List<Model.DataModel.tblEventDef>();
+            lst = new Model.Dao.EventDefDao().listAll();
+        }
+        @foreach (var ev in lst)
+        {
+            <div class="divEvent">
+                <div class="divEventColor" id="EventDef_@ev.Id" style="background-color:@ev.Color">&nbsp;</div>
+                <div class="divEventText">@Html.Raw(ev.Name.Replace("-", "<br />"))</div>
+            </div>
+        }
+
+        @*<div class="divEvent">
+                <div id="EventDef_0" style="background-color:white">&nbsp;</div>
+                <span>N/A</span>
+            </div>*@
+
+    </div>
+</div>
+
+<style>
+    .divEventStatus {
+        height: 36px;
+        padding: 0px;
+    }
+
+    .divEvent {
+        float: left;
+        width: 23%;
+        height: 36px
+    }
+
+        .divEvent div {
+            float: left;
+            /*width: 50px;*/
+            height: 36px;
+        }
+    .divEventColor{
+        float:left;
+        width: 50px;
+    }
+
+        .divEvent span {
+            margin-left: 5px;
+            font-size: 16pt;
+            font-weight: bold;
+            line-height: 5 0px;
+        }
+
+    .divEventText {
+        font-size: 14px;
+        padding-left: 5px;
+        font-weight: bold;
+       width:calc(100% -50px);
+    }
+</style>

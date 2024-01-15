@@ -1,0 +1,26 @@
+﻿<div class="col-sm-1">
+    <label class="control-label">@Resources.Language.WorkingShift</label>
+</div>
+<div class="col-sm-2">
+    <select id="WorkShift" name="WorkShift" class="form-control col-md-7 col-xs-12">
+        @{
+            var strSelectWS = "";
+
+            for (var iType = 0; iType < ViewBag.WorkShifts.Count; iType++)
+            {
+                if (ViewBag.WorkShifts[iType].Value == ViewBag.WorkShift.ToString())
+                {
+                    strSelectWS = " selected ";
+                }
+                else
+                {
+                    strSelectWS = "";
+                }
+                <option value="@ViewBag.WorkShifts[iType].Value" @strSelectWS>@ViewBag.WorkShifts[iType].Text</option>
+            }
+
+
+        }
+
+    </select>
+</div>

@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "Thông tin người dùng";
+}
+
+@section header{
+    Thông tin người dùng
+}
+
+@section Styles{
+
+    <style type="text/css">
+        .profile_img {
+            max-width: 160px;
+            max-height: 160px;
+            margin: 0 auto;
+        }
+
+        li.select2-selection__choice {
+            color: green !important;
+        }
+    </style>
+}
+
+
+
+@model Model.DataModel.tblUser
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="box box-info">
+            <div class="box-header"></div>
+            <div class="box-body no-padding">
+                @using (Html.BeginForm("SelfEdit", "User", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.UserName, Resources.Language.UserName, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.UserName, htmlAttributes: new { @class = "form-control", @readonly = true })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.FullName, Resources.Language.UserFullName, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", @required = "required" })
+                            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <!-- Role -->
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Role, Resources.Language.Role, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" readonly=true value="@ViewBag.RoleName" />
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Password, Resources.Language.Password, new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.PasswordFor(model => model.Password, new { @class = "form-control", @required = "required" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Email, Resources.Language.Email, new { @class = "control-label" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.Phone,Resources.Language.Phone, new { @class = "control-label" })
+                        </div>
+                        <div class="col-sm-3">
+                            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+                        </div>
+
+                    </div>
+
+                    @*<div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Khu vực 1</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                @Html.DropDownListFor(x => x.Area1Id, Model.Area1ListItem, htmlAttributes: new { @class = "form-control" })
+                                @Html.HiddenFor(model => model.Area1IdArrStr)
+                            </div>
+                            @Html.ValidationMessageFor(x => x.Area1Id, "", new { @class = "text-danger" })
+                        </div>*@
+
+                    @*<div class="form-group">
+
+                        <div class="col-sm-2">
+                            @Html.LabelFor(model => model.DepartmentId, "Văn phòng lv", new { @class = "control-label required" })
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" readonly=true value="@ViewBag.DepartmentName" />
+                        </div>
+                        <div class="col-sm-2">
+                                @Html.LabelFor(model => model.Status, "Đang hoạt động", new { @class = "control-label" })
+                            </div>
+                            <div class="col-sm-3">
+                                @Html.CheckBoxFor(model => model.Status, htmlAttributes: new { @checked = Model.Status,  })
+                            </div>
+                    </div>*@
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-success">@Resources.Language.Save</button>&nbsp;
+                            <a href="/Home/Index">
+                                <button class="btn btn-default" type="button">@Resources.Language.Back</button>
+                            </a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        //add css for attach file element
+        var input = $("input:file").css({
+            width: "100%",
+            border: "0.1px solid"
+        });
+    </script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script>
+        $('#frmValidate').validate({ // initialize the plugin
+            rules: {
+                UserName: {
+                    required: true
+                },
+                FullName: {
+                    required: true
+                },
+                Role: {
+                    required: true
+                }
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+
+        })
+    </script>
+}

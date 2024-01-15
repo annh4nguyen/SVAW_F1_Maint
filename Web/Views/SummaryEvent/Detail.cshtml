@@ -1,0 +1,427 @@
+﻿@{
+    ViewBag.Title = Resources.Language.EffOperation;
+    Layout = null;
+}
+@model List<avSVAW.Models.SummaryEventForm>
+<!DOCTYPE html>
+<html>
+<head>
+<title>@ViewBag.Title</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="icon" type="image/png" href="~/assets/img/favicon.ico" />
+
+<link href="~/AdminLTE/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link href="~/AdminLTE/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/AdminLTE/bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="~/AdminLTE/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/Scripts/adminlte/components/Ionicons/css/ionicons.min.css" rel="stylesheet" />
+<link href="/Content/adminlte/css/AdminLTE.min.css" rel="stylesheet" />
+<link href="~/assets/css/avSVAW.css" rel="stylesheet" />
+
+<script src="/Scripts/adminlte/components/jquery/dist/jquery.min.js"></script>
+<script src="/Scripts/adminlte/components/jquery-ui/jquery-ui.min.js"></script>
+<script src="~/AdminLTE/plugins/jquery/js/jQuery-2.1.4.min.js"></script>
+<script src="~/assets/js/Chart.min.js"></script>
+<script src="~/assets/js/loader.js"></script>
+
+<style>
+    .info-box-icon {
+        padding-top: 15px !important;
+    }
+
+    .blank-monitoring {
+        float: left;
+        width: 80px;
+        height: 50px !important;
+        background: url('/AdminLTE/dist/img/logo.png') no-repeat;
+    }
+
+    .box-header {
+        padding: 0px !important;
+    }
+
+    .box-title {
+        float: left;
+        width: 602px;
+        padding: 0px;
+        margin-top: -20px !important;
+    }
+
+    .title {
+        font-size: 24pt !important;
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    .row {
+        min-height: 30px !important;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+
+    .view-line {
+        /*display:none;*/
+    }
+
+    /*.view-layout {
+        padding: 3px !important;
+        border: 1px solid gray !important;
+        overflow: auto;
+    }*/
+    .small-box h2 {
+        font-size: 25px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .small-box .icon {
+        font-size: 85px;
+    }
+
+    .summary {
+        overflow: auto;
+        /*padding: 10px 0;*/
+    }
+
+    .summary-normal {
+        font-weight: 400 !important;
+        font-size: 17px !important;
+        padding-bottom: 2px;
+    }
+
+    .summary-number {
+        font-weight: bold !important;
+        font-size: 17px !important;
+        padding-bottom: 2px;
+    }
+
+      .info-box-typename {
+        float:left;
+        width: 50%;
+        color:#000;
+        font-weight:bold;
+        padding:3px;
+        text-align:right;
+    }
+    .info-box-typenumber {
+        float:left;
+        width: 50%;
+        padding:3px;
+        text-align:left;
+        color:#000;
+        font-weight:bold;
+    }
+</style>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box-header">
+            <div id="divLogo" class="blank-monitoring">&nbsp;</div>
+            <div class="box-title">
+                <h1 class="title">@Resources.Language.OperationMonitoring</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="box-body view-layout">
+      
+        <div class="clearfix visible-sm-block"></div>
+
+        @*@{
+            string[] color = {"#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a"};
+
+            for (int i = 0; i < 5; i++)
+            {
+                int startIndex = 2 * i;
+                avSVAW.Models.SummaryEventTypeForm item1 = Model[startIndex];
+                avSVAW.Models.SummaryEventTypeForm item2 = Model[startIndex + 1];
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <div class="info-box-typename" style="background-color:@color[startIndex]">@item1.NodeTypeName:</div>
+                        <div class="info-box-typenumber" style="background-color:@color[startIndex]">@item1.NumberOfNodes máy</div>
+                        <!-- /.info-box-content -->
+                        <div class="info-box-typename" style="background-color:@color[startIndex+1]">@item2.NodeTypeName:</div>
+                        <div class="info-box-typenumber" style="background-color:@color[startIndex+1]">@item2.NumberOfNodes máy</div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- fix for small devices only -->
+                <div class="clearfix visible-sm-block"></div>
+            }
+        }*@
+
+
+    </div>
+
+    <div class="row">
+        @*<input type="hidden" id="TimeOut" value="@ViewBag.TimeOut" />
+        <input type="hidden" id="LoadedTime" value="@ViewBag.LoadedTime" />*@
+        <input type="hidden" id="TimeOut" value="@ViewBag.TimeOut" />
+        <input type="hidden" id="NodeTypeId" value="@ViewBag.NodeTypeId" />
+        <input type="hidden" id="ReportDate" value="@ViewBag.ReportDate" />
+        <input type="hidden" id="NodeTypeName" value="@ViewBag.NodeTypeName" />
+        @{
+            string strTotalPersent = @ViewBag.TotalPercent.ToString(System.Globalization.CultureInfo.GetCultureInfo("es-US").NumberFormat);//123,45
+        }
+        <input type="hidden" id="TotalPercent" value="@strTotalPersent" />
+        @foreach (var item in Model)
+        {
+          string str = @item.WorkingPercent.ToString( System.Globalization.CultureInfo.GetCultureInfo("es-US").NumberFormat);//123,45
+            <input type="hidden" id="Node_@item.NodeId" value="@item.NodeName" />
+            <input type="hidden" id="Percent_@item.NodeId" value="@str" />
+        }
+        <div class="col-sm-12">
+            <canvas id="BarChart" height="30%" width="80%"></canvas>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        $(document).ready(function () {
+            CreateWorkingBarChart();
+
+            var timeout = $("#TimeOut").val();
+            var _nodeTypeId = $("#NodeTypeId").val();
+            if (timeout != "0") {
+            //    var loadedtime = $("#LoadedTime").val();
+
+            //    var starttime = Date.parse(loadedtime.toString());// split(' ')[1];
+            //    var timeElapsed = Date.now() - starttime;
+
+            //    var hours = (timeElapsed / 3600000);
+            //    var minutes = (timeElapsed / 60000) % 60;
+            //    var seconds = (timeElapsed / 1000) % 60;
+            //    var TotalSecond = hours * 3600 + minutes * 60 + seconds;
+            //    //alert(TotalSecond);
+            //    if (TotalSecond > parseInt(timeout)) {
+            //        window.location = '/NodeOnline/Index';
+            //        return;
+			var iTimeOut = parseInt(timeout) * 1000;
+                var timer = setTimeout(function () {
+                    if (_nodeTypeId == "0") {
+                        window.location = '/NodeOnline/Index';
+                    } else {
+                        window.location = '/SummaryEvent/Detail?Id=' + _nodeTypeId;
+                    }
+                    }, iTimeOut);
+                }
+            //var timeout = 60000; //Đặt tạm 2 phút //parseInt(timeoutText) * 1000;
+            //alert(timeout);
+            
+            //}
+
+        })
+
+        //---------------------------------------------------------------
+        function CreateWorkingBarChart() {
+
+            var ctx = document.getElementById('BarChart');
+            Chart.defaults.global.showTooltips = false;
+            var DataLabel = [];
+            var DataValue = [];
+
+            var color = new Array("#6fabe6", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a", "#f88e5a", "#19A979", "#ED4A7B", "#a676db", "#ffb500", "#d79191", "#c0bdbd", "#20cdcd", "#acac0a");
+            DataLabel.push("Tổng hợp");
+            DataValue.push($("#TotalPercent").val());
+            $("input[id^='Node_']").each(function () {
+                var _id = $(this).attr('id').split('_')[1];
+
+                DataLabel.push($(this).val());
+                DataValue.push($("#Percent_" + _id).val());
+            });
+
+            var reportdate = $("#ReportDate").val();
+            var nodetypename = $("#NodeTypeName").val();
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: DataLabel,
+                    datasets: [
+                        {
+                            label: DataLabel,
+                            data: DataValue,
+                            backgroundColor: color,
+                        },
+
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Biểu đồ hiệu suất vận hành máy ' + nodetypename + ' [' + reportdate + ']',
+                        fontSize: 24
+
+                    },
+                    tooltips: {
+                        enabled: false
+                        //mode: 'label',
+                        //callbacks: {
+                        //    label: function (tooltipItem, data) {
+                        //        return;
+                        //        var datasetIndex = tooltipItem.datasetIndex;
+                        //        var datasetLabel = data.datasets[datasetIndex].label;
+                        //        var yLabel = tooltipItem.yLabel;
+                        //        //var sum = data.datasets.reduce((sum, dataset) => {
+                        //        //    return sum + dataset.data[tooltipItem.index];
+                        //        //}, 0);
+                        //        //var percent = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] / sum * 100;
+                        //        //percent = percent.toFixed(0);
+                        //        return  yLabel + '%';
+                        //    }
+                        //}
+                    },
+
+                    "hover": {
+                        "animationDuration": 0
+                    },
+                    "animation": {
+                        "duration": 1,
+                        "onComplete": function () {
+                            var chartInstance = this.chart,
+                                ctx = chartInstance.ctx;
+
+                            ctx.font = Chart.helpers.fontString(24, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            this.data.datasets.forEach(function (dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                meta.data.forEach(function (bar, index) {
+                                    var data = dataset.data[index] + ' %';
+                                    //ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                                    var _y = bar._model.y - 5;
+                                    if (dataset.data[index] > 90) {
+                                        _y = bar._model.y + 35;
+                                    }
+
+                                    ctx.fillText(data, bar._model.x, _y);
+
+                                });
+                            });
+                        }
+                    },
+
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                fontSize: 24,
+                            },
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                min: 0, // it is for ignoring negative step.
+                                max: 100,
+                                fontSize: 24,
+                                beginAtZero: true,
+                                callback: function (value, index, values) {
+                                    if (Math.floor(value) === value) {
+                                        return value;
+                                    }
+                                }
+                            },
+                        }]
+                    }
+                }
+            });
+        }
+
+        function addPlugin() {
+            //add plugin chartjs
+            Chart.pluginService.register({
+                        beforeInit: function (chart) {
+                            var hasWrappedTicks = chart.config.data.labels.some(function (label) {
+                                return label.indexOf('\n') !== -1;
+                            });
+
+                            if (hasWrappedTicks) {
+                                // figure out how many lines we need - use fontsize as the height of one line
+                                var tickFontSize = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontSize, Chart.defaults.global.defaultFontSize);
+                                var maxLines = chart.config.data.labels.reduce(function (maxLines, label) {
+                                    return Math.max(maxLines, label.split('\n').length);
+                                }, 0);
+                                var height = (tickFontSize + 2) * maxLines + (chart.options.scales.xAxes[0].ticks.padding || 0);
+
+                                // insert a dummy box at the bottom - to reserve space for the labels
+                                Chart.layoutService.addBox(chart, {
+                                    draw: Chart.helpers.noop,
+                                    isHorizontal: function () {
+                                        return true;
+                                    },
+                                    update: function () {
+                                        return {
+                                            height: this.height
+                                        };
+                                    },
+                                    height: height,
+                                    options: {
+                                        position: 'bottom',
+                                        fullWidth: 1,
+                                    }
+                                });
+
+                                // turn off x axis ticks since we are managing it ourselves
+                                chart.options = Chart.helpers.configMerge(chart.options, {
+                                    scales: {
+                                        xAxes: [{
+                                            ticks: {
+                                                display: false,
+                                                // set the fontSize to 0 so that extra labels are not forced on the right side
+                                                fontSize: 0
+                                            }
+                                        }]
+                                    }
+                                });
+
+                                chart.hasWrappedTicks = {
+                                    tickFontSize: tickFontSize
+                                };
+                            }
+                        },
+                        afterDraw: function (chart) {
+                            if (chart.hasWrappedTicks) {
+                                // draw the labels and we are done!
+                                chart.chart.ctx.save();
+                                var tickFontSize = chart.hasWrappedTicks.tickFontSize;
+                                var tickFontStyle = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+                                var tickFontFamily = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+                                var tickLabelFont = Chart.helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+                                chart.chart.ctx.font = tickLabelFont;
+                                chart.chart.ctx.textAlign = 'center';
+                                var tickFontColor = Chart.helpers.getValueOrDefault(chart.options.scales.xAxes[0].fontColor, Chart.defaults.global.defaultFontColor);
+                                chart.chart.ctx.fillStyle = tickFontColor;
+
+                                var meta = chart.getDatasetMeta(0);
+                                var xScale = chart.scales[meta.xAxisID];
+                                var yScale = chart.scales[meta.yAxisID];
+
+                                chart.config.data.labels.forEach(function (label, i) {
+                                    label.split('\n').forEach(function (line, j) {
+                                        chart.chart.ctx.fillText(line, xScale.getPixelForTick(i - 5), (chart.options.scales.xAxes[0].ticks.padding || 10) + yScale.getPixelForValue(yScale.min-60) +
+                                            // move j lines down
+                                            j * (chart.hasWrappedTicks.tickFontSize + 2));
+                                    });
+                                });
+
+                                chart.chart.ctx.restore();
+                            }
+                        }
+                    });
+        }
+    </script>
+	</body>
+	</html>
+    <!-- End AnNH update -->
+    <!--Quản lý công việc-->
+    @*@{ Html.RenderAction("GetJobDashboardData", "Home"); }*@
+    <!--Quản lý nhận trả-->
+    @*@{ Html.RenderAction("GetOrderDashboardData", "Home"); }*@

@@ -1,0 +1,135 @@
+﻿@using avAndon.Models;
+
+@{
+    ViewBag.Title = "HỆ THỐNG GIÁM SÁT VẬN HÀNH";
+
+ }
+
+ 
+
+
+@section Menu {
+    @Scripts.Render("~/Scripts/Monitoring/Simulation-menu.js")
+    @Scripts.Render("~/Scripts/SignalR/jquery.signalR-2.2.0.js")
+    @Scripts.Render("~/Scripts/SignalR/jquery.signalR-2.2.0.min.js")
+    @Scripts.Render("/signalr/hubs")
+}
+
+@*<script src="/signalr/hubs"></script>*@
+
+<style>
+    .panel-fullscreen {
+        display: block;
+        z-index: 9999;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+    .toggle-monitoring {
+        height: 30px !important;
+        background: url('/AdminLTE/dist/img/logo.png') no-repeat;
+    }
+    .blank-monitoring {
+        float:left;
+        width: 10%;
+    } 
+</style>
+@Styles.Render("~/AdminLTE/plugins/datatables/css")
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+
+                <div class="box-header">
+                    <div id="divLogo" class="blank-monitoring">&nbsp;</div>
+                    <h3 class="box-title">@Resources.Language.OperationMonitoring</h3>
+                    <div style="float:right">
+                        <button type="button" class="toggle-expand-btn btn bg-yellow btn-sm" title="@Resources.Language.FullScreen"><i class="fa fa-expand"></i></button>
+                    </div>
+                </div>
+
+                    <div class="box-body">
+                        @{
+                            int Total = 28800;
+                            string[] colors = new string[] { "#3ab43b", "#eeb960", "#f61d4a", "#9a10b8"};
+                            Random iRandom = new Random();
+
+
+                        }
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Tổ máy:</b> Tổ 03
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Ngày:</b> 02/07/2018
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Ca:</b> Ngày
+
+                        <table id="nodelist" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên máy</th>
+                                    <th>Biểu đồ thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int iMachine = 1; iMachine <=12; iMachine++)
+                                {
+                                    Total = 28800;
+                                    <tr>
+                                        <td>@iMachine</td>
+                                        @{ 
+                                            string MachineName = "Máy ";
+                                            if (iMachine < 10)
+                                            {
+                                                MachineName += "0";
+                                            }
+                                            MachineName += iMachine;
+                                        }
+                                        <td>@MachineName</td>
+                                            <td>
+                                                <table  class="table">
+                                                    <tr>
+                                                        @while (Total > 0)
+                                                        {
+                                                            int iColor = iRandom.Next(0, 3);
+                                                            string strbgcolor = "background-color:" + colors[iColor];
+
+                                                            int iValue = iRandom.Next(20, 900);
+                                                            string strWidth = ((float)iValue / Total).ToString() + "%";
+                                                            <td width="@strWidth" style="@strbgcolor"> &nbsp;
+                                                            </td>
+                                                            Total -= iValue;
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                
+                @Html.Partial("~/Views/EventDef/_MonitoringStatus.cshtml")
+
+
+
+            </div>
+
+        </div>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/Scripts/Monitoring/Simulation.js")
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }

@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = @Resources.Language.Home + " - SVAW";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model avSVAW.Models.HomeModel
+
+@section header{
+    @ViewBag.Title
+}
+
+@section Styles{
+    <style type="text/css">
+        .small-box h2 {
+            font-size: 25px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .small-box .icon {
+            font-size: 85px;
+        }
+    </style>
+}
+<link href="/assets/css/avSVAW.css" rel="stylesheet" />
+
+
+<!-- End AnNH update -->
+<!--Quản lý công việc-->
+@*@{ Html.RenderAction("Summary", "Home"); }*@
+<!--Quản lý nhận trả-->
+@*@{ Html.RenderAction("GetOrderDashboardData", "Home"); }*@

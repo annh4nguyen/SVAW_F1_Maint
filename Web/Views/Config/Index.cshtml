@@ -1,0 +1,71 @@
+﻿@model List<avSVAW.Models.ConfigForm1>
+@{
+    int i = 0;
+    ViewBag.Title = Resources.Language.Time2SwitchScreen;
+}
+@section header{
+    @ViewBag.Title
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("SaveList", "Config", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+
+                <div class="box-body">
+
+                    @*<div class="form-group">
+                            <div class="col-sm-3">
+                                <label class="control-label">@Resources.Language.Time2SwitchScreen</label>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" id="Time2SwitchScreen" value="@nodetype.MaxStopTime" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>*@
+
+                    @foreach (var config in Model)
+                    {
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <label class="control-label">@config.ConfigText</label>
+                            @Html.Hidden("[" + @i + "].ConfigKey", config.ConfigKey)
+                            @Html.Hidden("[" + @i + "].ConfigText", config.ConfigText)
+                            @Html.Hidden("[" + @i + "].NodeTypeId", config.NodeTypeId)
+                        </div>
+                        <div class="col-sm-2">
+                            @Html.TextBox("[" + @i + "].ConfigValue", config.ConfigValue, new { @class = "form-control col-md-7 col-xs-12" })
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="col-md-5 col-xs-5" style="display:inline-block;">Hiển thị :</span>   @Html.CheckBox("[" + @i + "].ConfigShow", Convert.ToBoolean(config.ConfigShow), new { @class = "col-md-1 col-xs-1" })
+                        </div>
+                    </div>
+                        {
+                            i++;
+                        }
+                    }
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                        <a href="~/" class="btn btn-info pull-right">
+                            <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                        </a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            }
+
+
+        </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

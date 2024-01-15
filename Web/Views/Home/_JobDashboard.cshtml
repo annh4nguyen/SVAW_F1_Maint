@@ -1,0 +1,83 @@
+﻿@model List<avSVAW.Models.FormJobModel>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h2>Quản lý công việc</h2>
+            </div>
+            <div class="box-body">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-6 col-xs-12">
+                    <table class="table table-striped projects">
+                        <thead>
+                            <tr>
+                                <th>@Resources.Language.Day</th>
+                                <th>@Resources.Language.Leader </th>
+                                <th>@Resources.Language.Zone</th>
+                                <th>@Resources.Language.SSCode</th>
+                                <th>@Resources.Language.VendorCode</th>
+                                <th>@Resources.Language.Model</th>
+                                <th>@Resources.Language.Issue </th>
+                                <th>@Resources.Language.Number </th>
+                                <th>@Resources.Language.OK </th>
+                                <th>@Resources.Language.NG </th>
+                                @*<th>Hold</th>*@
+                            <th>@Resources.Language.Method</th>
+                            <th>@Resources.Language.Classify</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row_@item.ID">
+                                    <td><a href="/Job/Edit/@item.ID">@item.JobDate.GetValueOrDefault().ToString("yyyy/MM/dd")</a></td>
+                                    <td><a href="/Job/Edit/@item.ID">@item.LeaderArrName</a></td>
+                                    <td><a href="/Job/Edit/@item.ID">@item.Area2Name/@item.Area3Name</a></td>
+                                    <td><a href="/Job/Edit/@item.ID">@item.SSCode</a></td>
+                                    <td><a href="/Job/Edit/@item.ID">@item.VendorCode</a></td>
+                                    <td>@item.Mo_del</td>
+                                    <td>@item.Issue</td>
+                                    <td style="text-align: right">@item.Total.GetValueOrDefault().ToString("#,###")</td>
+                                    <td>@item.Total_OK.GetValueOrDefault().ToString("#,###")</td>
+                                    <td>@item.Total_NG.GetValueOrDefault().ToString("#,###")</td>
+                                    @*<td>@item.Total_Hold.GetValueOrDefault().ToString("#,###")</td>*@
+                                    <td>@item.MethodName</td>
+                                    <td>
+                                        @if (string.Equals(@item.RatingCode, "urgent", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <button type="button" class="btn btn-danger btn-xs">@item.RatingName</button>
+                                        }
+                                        else if (string.Equals(@item.RatingCode, "important", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <button type="button" class="btn btn-warning btn-xs">@item.RatingName</button>
+                                        }
+                                        else if (string.Equals(@item.RatingCode, "issue", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <button type="button" class="btn btn-info btn-xs">@item.RatingName</button>
+                                        }
+                                        else if (string.Equals(@item.RatingCode, "fixed", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <button type="button" class="btn btn-primary btn-xs">@item.RatingName</button>
+                                        }
+                                        else if (string.Equals(@item.RatingCode, "normal", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <button type="button" class="btn btn-success btn-xs">@item.RatingName</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-default btn-xs">@item.RatingName</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end project list -->
+                @*@{ Html.RenderAction("GetRatingDashboardData", "_RatingArea"); }*@
+               </div>
+        </div>
+    </div>
+</div>

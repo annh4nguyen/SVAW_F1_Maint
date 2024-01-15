@@ -1,0 +1,80 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model avSVAW.Models.LoginModel
+
+@*@using avSVAW.Common*@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập - SVAW</title>
+
+    @*<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>*@
+
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/assets/css/custom.min.css" rel="stylesheet" />
+
+</head>
+<body class="login">
+
+    <div class="col-md-12" style="text-align:center;padding-top:15px;">
+        <img src="/assets/img/logo.png">
+    </div>
+
+    <div class="row">
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                <section class="login_content">
+                    @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+                    {
+                        <form>
+                            <h1> @Resources.Language.Login </h1>
+                            <div class="col-md-10">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            </div>
+                            <div>
+                                @*@Html.TextBoxFor(model => model.UserName, new { data_autocomplete_url = Url.Action("Autocomplete"), @class = "form-control", @placeholder = "Tên đăng nhập", @autofocus = "autofocus" })*@
+
+                                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @placeholder = @Resources.Language.UserName, @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                            <div>
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = @Resources.Language.Password })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                            <div>
+                                <!-- Change this to a button or input when using this as a form -->
+                                <button type="submit" class="btn btn-default submit">@Resources.Language.Loginform</button>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="separator">
+
+                                <div class="clearfix"></div>
+                                <br>
+                                <div>
+                                    <p><b>SUMIDEN VIETNAM AUTOMOTIVE WIRE</b></p>
+                                    <p>©2019 All Rights Reserved.</p>
+                                </div>
+                            </div>
+                        </form>
+                    }
+
+                </section>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+﻿@model List<avSVAW.Models.StopWorkingPlanForm>
+@{
+    ViewBag.Title = Resources.Language.StopWorkingPlan;
+    ViewBag.SubTitle = Resources.Language.List + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("Index", "StopWorkingPlan", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.Year</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <select id="Year" name="Year" class="form-control col-md-7 col-xs-12">
+                            @{
+                                var strSelect = "";
+
+                                for (int i = 0; i < ViewBag.Years.Count; i++)
+                                {
+                                    if (ViewBag.Months[i].Value == ViewBag.Year.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+
+                                    <option value="@ViewBag.Years[i].Value" @strSelect>@ViewBag.Years[i].Text</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.Month</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <select id="Month" name="Month" class="form-control col-md-7 col-xs-12">
+                            @{
+
+
+                                for (int i = 1; i < ViewBag.Months.Count; i++)
+                                {
+                                    if (ViewBag.Months[i].Value == ViewBag.Month.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+                                    <option value="@ViewBag.Months[i].Value" @strSelect>@ViewBag.Months[i].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.WorkingShift</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="Shift" name="Shift" class="form-control col-md-7 col-xs-12">
+                            @{
+
+
+                                for (int i = 0; i < ViewBag.Shifts.Count; i++)
+                                {
+                                    if (ViewBag.Shifts[i].Value == ViewBag.Shift.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+                                    <option value="@ViewBag.Shifts[i].Value" @strSelect>@ViewBag.Shifts[i].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.NodeType</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="NodeType" name="NodeType" class="form-control col-md-7 col-xs-12">
+                            @{
+
+
+                                for (int i = 0; i < ViewBag.NodeTypes.Count; i++)
+                                {
+                                    if (ViewBag.NodeTypes[i].Value == ViewBag.NodeType.ToString())
+                                    {
+                                        strSelect = " selected ";
+                                    }
+                                    else
+                                    {
+                                        strSelect = "";
+                                    }
+                                    <option value="@ViewBag.NodeTypes[i].Value" @strSelect>@ViewBag.NodeTypes[i].Text</option>
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.Node</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="text" id="Node" name="Node" value="@ViewBag.Node" class="form-control col-md-7 col-xs-12">
+                    </div>
+                </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            &nbsp;
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>&nbsp;@Resources.Language.Search</button>
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <div class="box-footer no-border"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header">
+                <div style="float:right;">
+                    @*                        @Html.ActionLink("Add New Record", "Insert", null, new { @class = "btn btn-success" })*@
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-file-o"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.From</th>
+                            <th>@Resources.Language.To</th>
+                            <th>@Resources.Language.ApplyTo</th>
+                            <th>@Resources.Language.Day</th>
+                            <th style="width: 12%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var iCount = 1;
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                <tr>
+                                    <td>@iCount</td>
+                                    <td>
+                                        @ev.FromHour.ToString("00"):@ev.FromMinute.ToString("00")
+                                    </td>
+                                    <td>
+                                        @ev.ToHour.ToString("00"):@ev.ToMinute.ToString("00")
+                                    </td>
+                                    <td>@ev.NodeNames </td>
+                                    <td>@ev.Days</td>
+                                    <td>
+                                        @*@Html.ActionLink("Edit ", "Edit", new { EventDefID = dr["Id"].ToString() }, new { @class = "btn  btn-primary" })*@
+                                        <a href="/StopWorkingPlan/Edit/@ev.WorkingId" class="btn btn-primary  btn-xs">
+                                            <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                        </a>
+                                        &nbsp;
+                                        <a href="/StopWorkingPlan/Delete/@ev.WorkingId" class="btn btn-danger  btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                                            <i class="fa fa-trash"></i> &nbsp;@Resources.Language.Delete&nbsp;&nbsp;
+                                        </a>
+                                    </td>
+                                </tr>
+                                iCount++;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

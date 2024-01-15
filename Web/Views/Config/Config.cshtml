@@ -1,0 +1,72 @@
+﻿@model List<avSVAW.Models.ConfigForm>
+@{
+    int i = 0;
+    ViewBag.Title = Resources.Language.Time2SwitchScreen;
+}
+@section header{
+    @ViewBag.Title
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+
+
+ 
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            @using (Html.BeginForm("SaveList", "Config", FormMethod.Post, new { @class = "form-horizontal form-label-left", @id = "frmValidate", enctype = "multipart/form-data" }))
+            {
+
+            <div class="box-body">
+
+                @*<div class="form-group">
+            <div class="col-sm-3">
+                <label class="control-label">@Resources.Language.Time2SwitchScreen</label>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" id="Time2SwitchScreen" value="@nodetype.MaxStopTime" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>*@
+
+                @foreach (var config in Model)
+                {
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <label class="control-label">@config.ConfigText</label>
+                            @Html.Hidden("[" + @i + "].ConfigKey",Model[i].ConfigKey)
+                            @Html.TextBox("[" + @i + "].ConfigText",Model[i].ConfigText)
+                            @Html.TextBox("[" + @i + "].NodeTypeId",Model[i].NodeTypeId)
+                            @Html.TextBox("[" + @i + "].ConfigValue",Model[i].ConfigValue)
+                            <input type="hidden" id="ConfigKey" name="ConfigKey" value="@config.ConfigKey" class="form-control col-md-7 col-xs-12">
+                            <input type="hidden" id="ConfigText" name="ConfigText" value="@config.ConfigText" class="form-control col-md-7 col-xs-12">
+                            <input type="hidden" id="NodeTypeId" name="ConfigText" value="@config.NodeTypeId" class="form-control col-md-7 col-xs-12">
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="ConfigValue" name="ConfigValue" value="@config.ConfigValue" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
+                    {
+                        i++;
+                    }
+                }
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;&nbsp;@Resources.Language.Save&nbsp;</button>
+                    <a href="~/" class="btn btn-info pull-right">
+                        <i class="fa fa-mail-reply"></i>&nbsp;&nbsp; @Resources.Language.Back &nbsp;
+                    </a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+            }
+
+
+        </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

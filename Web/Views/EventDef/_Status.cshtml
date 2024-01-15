@@ -1,0 +1,13 @@
+﻿@using avAndon.Models;
+
+@{ 
+    List<EventDefModels> lst = new List<EventDefModels>();
+    EventDefModels x = new EventDefModels();
+    lst = x.GetList();
+
+}
+<li class="header">@Resources.Language.ListStatus</li>
+@foreach (EventDefModels ev in lst)
+{
+    <li class="eventdefstatus"><a href="#"><i class="fa fa-square" style="color:@ev.Color"></i> <span>@ev.Name</span></a></li>
+}

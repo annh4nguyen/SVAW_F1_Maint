@@ -1,0 +1,215 @@
+﻿
+@model List<avSVAW.Models.TotalStopForm>
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Report + " " + Resources.Language.Running;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<style>
+    .working-percent {
+        float:left;
+        background-color: forestgreen;
+        color:white;
+        text-align:center;
+    }
+    .un-working-percent {
+        float:right;
+        background-color: gray;
+    }
+
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("StopReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.FromDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="FromDate" name="FromDate" data-format="yyyy/MM/dd" value="@ViewBag.FromDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.ToDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divToDate" class="input-group input-append">
+                            <input id="ToDate" name="ToDate" data-format="yyyy/MM/dd" value="@ViewBag.ToDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- load template -->
+                    @Html.Partial("~/Views/Common/TempNodeType.cshtml")
+                    @Html.Partial("~/Views/Common/TempWorkShift.cshtml")
+
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.ViewReport</button>
+                            &nbsp;
+                            &nbsp;
+                            <button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;@Resources.Language.ExportExcel</button>
+                            &nbsp;
+                            &nbsp;
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-body ">
+                <!-- start project list -->
+                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    @{
+                        int StopCount = 0, iCount = 1;
+                        double TotalStopTime = 0;
+                    }
+                    <table id="EFF" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">#</th>
+                                <th rowspan="2">@Resources.Language.Node</th>
+                                <th rowspan="2">@Resources.Language.NodeType</throwspan="2">
+                                <th colspan="2">@Resources.Language.Running</th>
+                                <th colspan="2">@Resources.Language.Stop</th>
+                                @*<th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.NumberOfStop</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Minute)</th>
+                                <th>@Resources.Language.StopWorkingPlan (@Resources.Language.Minute)</th>*@
+                            </tr>
+                            <tr>
+                                <th>@Resources.Language.Quantity</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Hour)</th>
+                                <th>@Resources.Language.Quantity</th>
+                                <th>@Resources.Language.TotalDuration (@Resources.Language.Hour)</th>
+                                @*<th>@Resources.Language.StopWorkingPlan (@Resources.Language.Minute)</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td>
+                                    @iCount
+                                </td>
+
+                                <td>
+                                    <a href="/Report/StopDetailReport?FromDate=@ViewBag.FromDate&ToDate=@ViewBag.ToDate&NodeId=@item.NodeId&WorkShift=@ViewBag.WorkShift">
+                                        @item.NodeName
+                                    </a>
+                                </td>
+
+                                <td>
+                                    @item.NodeTypeName
+                                </td>
+
+                                <td style="text-align:right">
+                                    @item.NumberOfRunning.ToString("#,##0")
+                                </td>
+
+                                <td style="text-align:right">
+                                    @item.strRunningDuration
+                                </td>
+
+
+                                <td style="text-align:right">
+                                    @item.NumberOfStop.ToString("#,##0")
+                                </td>
+
+                                <td style="text-align:right">
+                                    @item.strStopDuration
+                                </td>
+                                @*<td style="text-align:right">
+                                    @item.strPlanStopDuration
+                                </td>*@
+
+                                @{
+                                    iCount++;
+                                }
+
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="ln_solid"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+        function ExportExcel() {
+            var url = '@Url.Action("ExportEffToExcel", "Report")';
+            var _fromDate = $('#FromDate').val();
+            var _toDate = $('#ToDate').val();
+            var _nodetype = $("#NodeType").val();
+            //?FromDate = 2019 % 2F05% 2F01& ToDate=2019 % 2F05% 2F09& Customer=3
+            var ExcelURL = url + '?FromDate=' + _fromDate + '&ToDate=' + _toDate + '&NodeType=' + _nodetype;
+            window.location.href = ExcelURL;
+    };
+
+        $(function () {
+            $('#inventory').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+        })
+        $(document).ready(function () {
+
+
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+
+        });
+    </script>
+
+
+}
+

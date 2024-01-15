@@ -1,0 +1,84 @@
+﻿@model List<Model.DataModel.tblNodeType>
+@{
+    ViewBag.Title = Resources.Language.NodeType;
+    ViewBag.SubTitle = Resources.Language.List + " " + ViewBag.Title;
+}
+@section header{
+    @ViewBag.SubTitle
+}
+
+@*@Styles.Render("~/AdminLTE/plugins/datatables/css")*@
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-header">
+                <div style="float:right;">
+                    @*                        @Html.ActionLink("Add New Record", "Insert", null, new { @class = "btn btn-success" })*@
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-file-o"></i>&nbsp; @Resources.Language.Create &nbsp;
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table id="EventDeflist" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Resources.Language.Code</th>
+                            <th>@Resources.Language.Name</th>
+                            <th>@Resources.Language.Description</th>
+                            <th>@Resources.Language.Width</th>
+                            <th>@Resources.Language.Height</th>
+                            <th>@Resources.Language.MaxStopTime</th>
+                            <th style="width: 20%">@Resources.Language.Action</th>
+                        </tr>
+                    </thead>
+                    @if (Model.Count > 0)
+                    {
+                        var i = 1;
+                        <tbody>
+                            @foreach (var f in Model)
+                            {
+                            <tr>
+                                <td>
+                                    @i
+                                </td>
+                                <td>
+                                    @f.Code
+                                </td>
+                                <td>
+                                    @f.Name
+                                </td>
+                                <td>@f.Description </td>
+                                <td>
+                                    @f.Width
+                                </td>
+                                <td>@f.Height</td>
+                                <td>@f.MaxStopTime </td>
+                                <td>
+                                    <a href="/NodeType/Edit/@f.Id" class="btn btn-primary  btn-xs">
+                                        <i class="fa fa-pencil"></i>&nbsp; @Resources.Language.Edit &nbsp;&nbsp;
+                                    </a>
+                                    &nbsp;
+                                    <a href="/NodeType/Delete/@f.Id" class="btn btn-danger  btn-xs" onclick="return confirm('@Resources.Language.DeleteConfirm')">
+                                        <i class="fa fa-trash"></i> &nbsp;@Resources.Language.Delete&nbsp;&nbsp;
+                                    </a>
+                                </td>
+                            </tr>
+                                i = i + 1;
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+@*@section Scripts {
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }*@

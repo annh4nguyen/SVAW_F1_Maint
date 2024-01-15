@@ -1,0 +1,236 @@
+﻿
+
+@{
+    /**/
+    ViewBag.Title = Resources.Language.Chart +" " + Resources.Language.PlanAndPractice ;
+    DateTime _current = DateTime.Now;
+    int _month = _current.Month, _year = _current.Year;
+
+}
+@section header{
+    @ViewBag.Title
+}
+
+<script src="~/assets/js/Chart.min.js"></script>
+
+<style>
+    .working-percent {
+        float: left;
+        background-color: forestgreen;
+        color: white;
+        text-align: center;
+    }
+
+    .un-working-percent {
+        float: right;
+        background-color: #ccc9c9;
+    }
+</style>
+
+<!--Tiêu chí tìm kiếm-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                @using (Html.BeginForm("ChartIncReport", "Report", FormMethod.Get, new { @class = "form-horizontal form-label-left" }))
+                {
+                <div class="form-group">
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.FromDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divFromDate" class="input-group input-append">
+                            <input id="FromDate" name="FromDate" data-format="yyyy/MM/dd" value="@ViewBag.FromDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <label class="control-label">@Resources.Language.ToDate</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <div id="divToDate" class="input-group input-append">
+                            <input id="ToDate" name="ToDate" data-format="yyyy/MM/dd" value="@ViewBag.ToDate" type="text" class="form-control col-md-5 col-xs-12"></input>
+                            <div class="input-group-addon">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"> </i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- load template -->
+                    @Html.Partial("~/Views/Common/TempNodeType.cshtml")
+                    @Html.Partial("~/Views/Common/TempWorkShift.cshtml")
+                </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-4">
+                            <button type="button" onclick="CreateChartInc()" class="btn btn-success" id="ViewReport"><i class="fa fa-search"></i>&nbsp;@Resources.Language.ViewReport</button>
+                            &nbsp;
+                            &nbsp;
+                            @*<button type="button" onclick="ExportExcel();" class="btn btn-primary"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Xuất Excel</button>
+                                &nbsp;
+                                &nbsp;*@
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12" id="ChartContainer">
+        <canvas id="LineChart" height="30%" width="80%"></canvas>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @*<script src="~/assets/js/order.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#divFromDate').datetimepicker({
+                pickTime: false,
+                minView: "month"
+            });
+            $('#divToDate').datetimepicker({
+                pickTime: false
+            });
+
+            //$('#Customer').select2({
+            //});
+
+        });
+
+        function CreateChartInc() {
+            var fromDate = $("#FromDate").val();
+            var toDate = $("#ToDate").val();
+            var nodetype = $("#NodeType").val();
+             var WorkShift = $("#WorkShift").val();
+            var maxDuration = 0;
+            alert
+            $.ajax({
+                //Get Data List ("OperationReport", "SummaryEvent",
+                url: '/Report/GetChartIncReport?FromDate=' + fromDate + '&ToDate=' + toDate + '&NodeType=' + nodetype + '&WorkShift=' + WorkShift,
+                type: 'POST',
+                contentType: 'application/html',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+
+                    var DataActual = [];
+                    var DataPlan = [];
+
+                    var DataLabel = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = data[i];
+                        DataActual.push(obj.ActualDuration);
+                        DataPlan.push(obj.PlanDuration);
+                        maxDuration = obj.PlanDuration > obj.ActualDuration ? obj.PlanDuration : obj.ActualDuration;
+                        if (i == 0) {
+                            DataLabel.push("");
+                        } else {
+                            DataLabel.push(obj.Day + "/" + obj.Month);
+                        }
+
+                    }
+
+                    DrawChartInc(DataActual, DataPlan, DataLabel, maxDuration);
+                    //End of Success
+                },
+                error: function (e) {
+                    alert("Error loading Operation Detail Report!");
+                }
+            }).done(function () {
+                $('#loading').hide();
+            });
+        }
+
+        function DrawChartInc(DataActual,DataPlan, DataLabel,maxDuration) {
+            $('#LineChart').remove();
+            $('#ChartContainer').html('<canvas id="LineChart" height="30%" width="80%"></canvas>');
+            //alert(DataValue);
+            var ctx = document.getElementById('LineChart');
+
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: DataLabel,
+                    datasets: [
+                        {
+                            label:"@Resources.Language.Practice",
+                            fill: false,
+                            borderColor: "blue",
+                            lineTension: 0.1,
+                            data: DataActual
+                        },
+                        {
+                            label: "@Resources.Language.Plan",
+                            fill: false,
+                            borderColor: "red",
+                            lineTension: 0.1,
+                            data: DataPlan
+                        },
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: true,
+                    },
+                    title: {
+                        display: true,
+                        text: "@Resources.Language.Chart" +" " + "@Resources.Language.PlanAndPractice",
+                        fontSize: 24
+
+                    },
+                    tooltips: {
+                        callbacks: {
+                            //title: function(tooltipItem, data) {
+                            //   var startDate = $("#FromDate").val();
+                            //    var d = startDate.split("/");
+                            //    var yLabel = tooltipItem[0].xLabel;
+                            //    var dateNew = new Date(Number(d[0]), Number(d[1]), Number(d[2]) + Number(yLabel));
+                            //    var month = dateNew.getMonth() < 10 ? "0" + dateNew.getMonth() : dateNew.getMonth();
+                            //    var date = dateNew.getDate() < 10 ? "0" + dateNew.getDate() : dateNew.getDate();
+                            //    return "Ngày :" + dateNew.getFullYear() + "/" + month + "/" +date;
+                            //},
+                            //label: function (tooltipItem, data) {
+                            //    var datasetIndex = tooltipItem.datasetIndex;
+                            //     var datasetLabel = data.datasets[datasetIndex].label;
+                            //    var yLabel = tooltipItem.yLabel;
+                            //    return  datasetLabel + " :" + yLabel + ' h';
+                            //}
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                fontSize: 12,
+                            },
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0, // it is for ignoring negative step.
+                                stepSize: 24,
+                                fontSize: 12,
+                                beginAtZero: true,
+                                max: maxDuration + 24,
+                            },
+                        }]
+                    }
+                }
+            });
+        }
+
+    </script>
+
+
+}
+

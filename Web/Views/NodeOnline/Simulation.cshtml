@@ -1,0 +1,168 @@
+﻿@using avAndon.Models;
+
+@{
+    ViewBag.Title = Resources.Language.MenuMonitoring;
+
+ }
+@{
+
+    string strHTML = "";
+    //strHTML += "   <label for='ZoneName' class='col-sm-2 control-label'>" + @Resources.Language.Factory + "</label> ";
+    strHTML += "          <div class='col-sm-6'> " +
+"              <select class='form-control select2' id='FactoryId' name='FactoryId' style='width: 100%;'>";
+    int intFactoryId = int.Parse(Request.Params["FactoryId"].ToString());
+    }
+ 
+    @{ 
+        List<FactoryModels> fList = new List<FactoryModels>();
+        fList = new FactoryModels().GetList();
+
+        foreach (FactoryModels f in fList)
+        {
+            string strCheck = "";
+            if (f.Id == intFactoryId) { strCheck = " selected "; }
+            strHTML += "<option value=" + f.Id + strCheck + ">" + f.Name + "</option>";
+        }
+        strHTML += " </select></div> ";
+
+        strHTML += "<button id='btnViewData' class='btn btn-primary'><i class='fa fa-search'></i>&nbsp;&nbsp;" + Resources.Language.View + " &nbsp;</button>";
+
+        //ViewBag.SubTitle = Resources.Language.List + " " + Resources.Language.Node;
+        ViewBag.SubTitle = @Html.Raw(strHTML);
+        //Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+
+@section Menu {
+    @Scripts.Render("~/Scripts/Monitoring/Simulation-menu.js")
+    @Scripts.Render("~/Scripts/SignalR/jquery.signalR-2.2.0.js")
+    @Scripts.Render("~/Scripts/SignalR/jquery.signalR-2.2.0.min.js")
+    @Scripts.Render("/signalr/hubs")
+}
+
+@*<script src="/signalr/hubs"></script>*@
+
+<style>
+    .panel-fullscreen {
+        display: block;
+        z-index: 9999;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+    .toggle-monitoring {
+        height: 30px !important;
+        background: url('/AdminLTE/dist/img/logo.png') no-repeat;
+    }
+    .blank-monitoring {
+        float:left;
+        width: 10%;
+    }
+    .divStickky {
+        padding: 5pt;
+        background-color: #ccc;
+        position: sticky;
+        bottom: 0;
+    }
+</style>
+@Styles.Render("~/AdminLTE/plugins/datatables/css")
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+
+                <div class="box-header">
+                    <div id="divLogo" class="blank-monitoring">&nbsp;</div>
+                    <h3 class="box-title">@Resources.Language.OperationMonitoring</h3>
+                    <div style="float:right">
+                        <button type="button" class="toggle-expand-btn btn bg-yellow btn-sm" title="@Resources.Language.FullScreen"><i class="fa fa-expand"></i></button>
+                    </div>
+                </div>
+
+                    <div class="box-body">
+                        @{
+                            List<ZoneModels> lstZone = new List<ZoneModels>();
+                            lstZone = new ZoneModels().GetList();
+                            List<LineModels> lstLine = new List<LineModels>();
+                            lstLine = new LineModels().GetList(intFactoryId);
+                            List<NodeModels> lstNode = new List<NodeModels>();
+                            lstNode = new NodeModels().GetList(intFactoryId);
+                            int iLine = 1, iZone = 1, iNode = 1;
+                            NodeModels curNode = new NodeModels();
+                            if (lstNode.Count > 0)
+                            { curNode = lstNode[0]; }
+                        }
+                        <table id="nodelist" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    @foreach (ZoneModels z in lstZone)
+                                    {
+                                        <th style="background-color:@z.Color;">@z.Name</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (LineModels l in lstLine)
+                                {
+                                    <tr>
+                                        <td>@l.Name</td>
+                                        @foreach (ZoneModels z in lstZone)
+                                        {
+                                            <td style="background-color:@z.Color">
+                                                <table  class="table table-bordered tablenode">
+                                                    <tr>
+                                                        @while (curNode.ZoneId == z.Id && iNode <= lstNode.Count)
+                                                        {
+                                                            string strbgcolor = "", text = curNode.Name;
+                                                            if (curNode.Active == 0) {
+                                                                strbgcolor = "background-color:#ddd";
+                                                                text = "<strike>" + text + "</strike>";
+                                                            }
+                                                            <td id="Node_@curNode.Id" @*style="@strbgcolor"*@>
+                                                                <div style="height:100%;width:100%; text-align:center;">
+                                                                    @curNode.Name
+                                                                </div>
+                                                            </td>
+                                                            if (iNode < lstNode.Count)
+                                                            {
+                                                                curNode = lstNode[iNode];
+                                                            }
+                                                            iNode++;
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        }
+                                    </tr>
+                                    iLine++;
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+   
+
+                <div class="divStickky">
+                    @Html.Partial("~/Views/EventDef/_MonitoringStatus.cshtml")
+                </div>
+
+            </div>
+      
+        </div>
+
+    </div>
+
+
+
+    @section Scripts {
+        @Scripts.Render("~/Scripts/Monitoring/Simulation.js")
+        @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+        @Scripts.Render("~/Scripts/Tables/Data")
+    }
